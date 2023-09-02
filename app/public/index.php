@@ -86,22 +86,100 @@
     }
 </style>
 <body>
-      <div id="container">
-         <header>Register new account</header>
-         <form method="post">
-            <fieldset>
-               <br/>
-               <input type="text" name="username" id="username" placeholder="Username" required autofocus>
-               <br/><br/>
-               <input type="email" name="email" id="email" placeholder="E-mail" required>
-               <br/><br/>
-               <input type="password" name="password" id="password" placeholder="Password" required>
-               <br/><br/>
-               <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password" required>
-               <br/> <br/> <br/>
-               <label for="submit"></label>
-               <input type="submit" name="submit" id="submit" value="REGISTER">
-            </fieldset>
-         </form>
-      </div>
-   </body>
+<div id="container">
+    <header>Register new account</header>
+    <form method="post">
+        <fieldset>
+            <br/>
+            <input type="text" name="name" id="name" placeholder="Username" >
+            <br/><br/>
+            <input type="text" name="email" id="email" placeholder="E-mail" >
+            <br/><br/>
+            <input type="password" name="password" id="password" placeholder="Password" >
+            <br/><br/>
+            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password" >
+            <br/> <br/> <br/>
+            <label for="submit"></label>
+            <input type="submit" name="submit" id="submit" value="REGISTER">
+        </fieldset>
+    </form>
+</div>
+</body>
+
+
+<?php
+
+$method = $_SERVER['REQUEST_METHOD'];
+$errors = [];
+
+$pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
+
+if ($method === "POST") {
+    if (isset($_POST['name'])) {
+        $name = $_POST['name'];
+        if (empty($name)) {
+            $errors['name'] = "поле имя не может быть пустым";
+        }
+        if (strlen($name) < 2) {
+            $errors['name'] = "имя должен содержать больше 1 символов";
+        }
+        for($i = 1; $i <= 9; $i++) {
+            if (str_contains($name, $i)) {
+                $errors['name'] = "имя не должен содержать цифры";
+            }
+        }
+    }
+    if (isset($_POST['email'])) {
+        $email = $_POST['email'];
+        if (empty($email)) {
+            $errors['email'] = "поле email не может быть пустым";
+        }
+        if (strlen($email) < 3) {
+            $errors['email'] = "email должен содержать больше 3 символов";
+        }
+        if (!str_contains($email, '@')){
+            $errors['email'] = "некорректный email";
+        }
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email ");
+        $stmt->execute(['email' => $email]);
+        $userData = $stmt->fetch();
+        if (!empty($userData['email'])) {
+            $errors['email'] = 'пользователь с таким адресом электронной почты уже зарегистрирован';
+        }
+    }
+    if (isset($_POST['password'])) {
+        $pwd = $_POST['password'];
+        if (empty($pwd)) {
+            $errors['password'] = "поле пароля не может быть пустым";
+        }
+        if (strlen($pwd) < 3) {
+            $errors['password'] = "пароль должен содержать больше 3 символов";
+        }
+    }
+
+
+    if (!empty($errors['name'])) {
+        print_r($errors['name']);
+        echo '<br>';
+    }
+    if (!empty($errors['email'])) {
+        print_r($errors['email']);
+        echo '<br>';
+    }
+    if (!empty($errors['password'])) {
+        print_r($errors['password']);
+        echo '<br>';
+    }
+
+    if(empty($errors)) {
+
+        $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
+
+        $pwd = password_hash($pwd, PASSWORD_DEFAULT);
+
+        $stmt = $pdo->prepare("INSERT INTO users (name, email, password) 
+                VALUES (:name, :email, :pwd)");
+        $stmt->execute(['name' => $name, 'email' => $email, 'pwd' => $pwd]);
+    }
+
+}
