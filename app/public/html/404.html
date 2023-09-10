@@ -1,0 +1,129 @@
+
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="CSS/style.css">
+
+    <title>Not Found</title>
+</head>
+
+<body>
+<header>
+    <nav>
+        <a href="#">
+            <button class="headerNav-btnBackHome">HOME</button>
+        </a>
+    </nav>
+</header>
+<main>
+    <h1 class="main-lblError">Not Found</h1>
+    <h3 class="main-lblError">404</h3>
+</main>
+</body>
+
+</html>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap');
+
+    * {
+        font-family: 'Jim Nightshade', cursive;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --color-primary: #454644;
+        --color-primary-two: #F89716;
+        --color-white: #A2B0B1;
+        --color-black: #050505;
+        --color-gray: #939896;
+
+        --font-lg: 38px;
+        --font-md: 24px;
+        --font-sm: 15px;
+        --font-xs: 9px;
+
+        --size-lg: 1280px;
+        --size-md: 976px;
+        --size-sm: 768px;
+        --size-xs: 500px;
+    }
+
+    html {
+        background: url("https://wallegend.net/preview/1151.jpg") no-repeat center;
+        background-size: cover;
+    }
+
+    html,body {
+        height: 100%;
+    }
+
+    header, nav {
+        width: 100%;
+        height: 50px;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .headerNav-btnBackHome {
+        width: 200px;
+        height: 50px;
+        background-color: transparent;
+        border: 1px solid var(--color-gray);
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+        outline: none;
+        cursor: pointer;
+        font-size: var(--font-lg);
+        transition: height 1s, padding-top 1s, background-color 1s, box-shadow 1s, border-color 1s;
+    }
+
+    .headerNav-btnBackHome:hover {
+        height: 150px;
+        padding-top: 50px;
+        background-color: rgba(255, 255, 255, 0.349);
+        box-shadow: 0 10px 10px var(--color-black);
+        border-color: var(--color-black);
+    }
+
+    main {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 100px;
+    }
+
+    .main-lblError {
+        font-size: 15vw;
+        text-shadow: 0 0 10px rgb(85, 85, 85);
+        transition: text-shadow 5s;
+    }
+
+    main:hover .main-lblError {
+        text-shadow: 0 20px 20px var(--color-white);
+    }
+
+    @media screen and (max-width: 768px) {
+        .main-lblError {
+            font-size: 20vw;
+        }
+    }
+</style>
