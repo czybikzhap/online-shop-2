@@ -1,47 +1,20 @@
-<head>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/6ab9ac06da.js" crossorigin="anonymous"></script>
-</head>
-
 <body>
-
-<?php foreach ($products as $product): ?>
+<?php foreach ($users as $user): ?>
 <div class="container ">
     <div class="card asics">
-        <p class="price"><?php echo $product['price'] . 'Rub'?></p>
+        <p class="price"><?php echo 'MY PROFILE' ?></p>
 
         <i class="info fas fa-info-circle"></i>
 
         <div class="imgBx">
-            <img src="<?php echo $product['image url']?>">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgsScFIhClm4CWEuK6oHG5Ts8RaOqMGB4YeA&usqp=CAU">
         </div>
         <div class="contentBx  ">
-            <h2><?php echo $product['product_name']?></h2>
+            <h2><?php echo "My name: " . " " . $user['name']?></h2>
 
             <div class="size">
-                <h3><?php echo $product['description']?></h3>
+                <h3><?php echo "My email: " . " " . $user['email']?></h3>
             </div>
-
-            <form action="/add-to-cart" method="POST">
-                <button> Add to Cart</button>
-                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-            </form>
-            <br><br>
-
-                <div class="quantity-field" >
-                    <button
-                            class="value-button decrease-button"
-                            onclick="decreaseValue(this)"
-                            title="Azalt">-</button>
-                    <div class="number">0</div>
-                    <button
-                            class="value-button increase-button"
-                            onclick="increaseValue(this, 5)"
-                            title="Arrtır"
-                    >+
-                    </button>
-                </div>
-            </form>
 
         </div>
     </div>
@@ -49,33 +22,7 @@
 
 </div>
 <?php endforeach; ?>
-<div class="buttons">
-    <a href="cart" style="color:blue" class="register-link">Go to Cart</a>
-    <br>
-    <a href="profile" style="color:red" class="register-link">My Profile</a>
-</div>
-
 </body>
-
-<script>
-    function increaseValue(button, limit) {
-        const numberInput = button.parentElement.querySelector('.number');
-        var value = parseInt(numberInput.innerHTML, 10);
-        if(isNaN(value)) value = 0;
-        if(limit && value >= limit) return;
-        numberInput.innerHTML = value+1;
-    }
-
-
-    function decreaseValue(button) {
-        const numberInput = button.parentElement.querySelector('.number');
-        var value = parseInt(numberInput.innerHTML, 10);
-        if(isNaN(value)) value = 0;
-        if(value < 1) return;
-        numberInput.innerHTML = value-1;
-    }
-
-</script>
 
 <style>
     * {
@@ -84,7 +31,7 @@
         font-family: Quicksand;
     }
     body {
-        background: url("https://foni.club/uploads/posts/2023-02/1677063387_foni-club-p-oboi-naruto-dlya-rabochego-stola-noutbuka-1.jpg") no-repeat center center fixed;
+        background: url("https://wallpaperaccess.com/full/1416952.jpg") no-repeat center center fixed;
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -266,74 +213,3 @@
         height: 100%;
         text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
     }
-    .info:hover + .text {
-        display: block;
-    }
-    .quantity-field {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 120px;
-        height: 40px;
-        margin: 0 auto;
-    }
-
-    .quantity-field .value-button{
-        border: 1px solid #ddd;
-        margin: 0px;
-        width: 40px;
-        height: 100%;
-        padding: 0;
-        background: #eee;
-        outline: none;
-        cursor: pointer;
-    }
-
-    .quantity-field .value-button:hover {
-        background: rgb(230, 230, 230);
-    }
-
-    .quantity-field .value-button:active{
-        background: rgb(210, 210, 210);
-    }
-
-    .quantity-field .decrease-button {
-        margin-right: -4px;
-        border-radius: 8px 0 0 8px;
-    }
-
-    .quantity-field .increase-button {
-        margin-left: -4px;
-        border-radius: 0 8px 8px 0;
-    }
-
-    .quantity-field .number{
-        display: inline-block;
-        text-align: center;
-        border: none;
-        border-top: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        margin: 0px;
-        width: 40px;
-        height: 100%;
-        line-height: 40px;
-        font-size: 11pt;
-        box-sizing: border-box;
-        background: white;
-        font-family: calibri;
-    }
-
-    .quantity-field .number::selection{
-        background: none;
-    }
-
-    /*
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    */
-
-
-</style>

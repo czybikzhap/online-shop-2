@@ -14,7 +14,13 @@ if ($uri === '/signup') {
 } elseif ($uri === '/logout') {
     session_start();
     session_destroy();
-} else {
+}  elseif ($uri === '/cart') {
+    require_once "./handlers/cart.php";
+} elseif ($uri === '/add-to-cart') {
+    require_once "./handlers/add-to-cart.php";
+} elseif ($uri === '/profile') {
+    require_once "./handlers/profile.php";
+} {
     require_once "./html/404.html";
 }
 
