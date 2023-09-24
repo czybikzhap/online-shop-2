@@ -2,6 +2,13 @@
 
 class UserController
 {
+    private PDO $pdo;
+
+    public function __construct()
+    {
+        $this->pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
+    }
+
     public function signup(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -9,7 +16,6 @@ class UserController
             $errors = $this->IsValidSignUp($_POST);
 
             if (empty($errors)) {
-                $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
 
                 $name = $_POST['name'];
                 $email = $_POST['email'];
@@ -17,25 +23,28 @@ class UserController
 
                 $password = password_hash($pwd, PASSWORD_DEFAULT);
 
-                $stmt = $pdo->prepare("INSERT INTO users (name, email, password) 
+                $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) 
                 VALUES (:name, :email, :password)");
                 $stmt->execute(['name' => $name, 'email' => $email, 'password' => $password]);
-                //$dbinfo = $stmt->fetch();
+
+
+                $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email ");
+                $stmt->execute(['email' => $email]);
+                $dbinfo = $stmt->fetch();
+
+                session_start();
+                $_SESSION['id'] = $dbinfo['id'];
 
                 header('Location:./main');
-
-
             }
         }
-
         require_once "../Views/signup.html";
+
     }
 
     private function IsValidSignUp(array $data): array
     {
         $errors = [];
-
-        $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
 
         if (!isset($data['name'])) {
             $errors['name'] = 'поле имя не задано';
@@ -61,7 +70,7 @@ class UserController
                 $errors['email'] = "некорректный email";
             }
 
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email ");
+            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email ");
             $stmt->execute(['email' => $email]);
             $userData = $stmt->fetch();
             if (!empty($userData['email'])) {
@@ -94,12 +103,10 @@ class UserController
             if (empty($errors)) {
                 $errors = [];
 
-                $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
-
                 $email = $_POST['email'];
                 $pwd = $_POST['password'];
 
-                $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email ");
+                $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email ");
                 $stmt->execute(['email' => $email]);
                 $dbinfo = $stmt->fetch();
                 //print_r($dbinfo);
@@ -152,10 +159,10 @@ class UserController
 
         $userId = $_SESSION['id'];
 
-        $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
-        $users = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-        $users->execute(['id' => $userId]);
-        $users = $users->fetchAll(PDO::FETCH_ASSOC);
+        $user = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
+        $user->execute(['id' => $userId]);
+        $user = $user->fetch(PDO::FETCH_ASSOC);
+        //print_r($user);
 
 
         require_once "../Views/profile.phtml";

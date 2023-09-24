@@ -13,21 +13,40 @@ class CartController
         $userId = $_SESSION['id'];
 
         $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
-        $cart = $pdo->prepare("SELECT * FROM cart WHERE user_id = :user_id");
-        $cart->execute(['user_id' => $userId]);
-        $cart = $cart->fetchAll(PDO::FETCH_ASSOC);
-//print_r($cart);
-
-
-//$productId = $cart['product_id'];
-//
-//$price = $pdo->query("SELECT * FROM products WHERE product_id = :product_id");
-//$price->execute(['product_id' => $productId]);
-//$price = $price->fetchAll(PDO::FETCH_ASSOC);
-//print_r($price);
-
+        $cart = $this->getProductsInCart($userId, $pdo);
+        //print_r($cart);
+        $productsWithKeyId = $this->productsWithKeyId($cart, $pdo);
 
         require_once "./../Views/cart.phtml";
+    }
+
+    private function getProductsInCart (int $userId, PDO $pdo): array
+    {
+        $cart = $pdo->prepare("SELECT * FROM cart WHERE user_id = :user_id");
+        $cart->execute(['user_id' => $userId]);
+
+        return $cart->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function productsWithKeyId(array $cart, PDO $pdo): array
+    {
+        $productIds = [];
+        foreach ($cart as $productInCart) {
+            $productIds[] = $productInCart['product_id'];
+        }
+        //print_r($productIds);
+
+        $productIds = implode(', ', $productIds);
+
+        $stmt = $pdo->query("SELECT * FROM products WHERE id in ($productIds)");
+        $products = $stmt->fetchAll();
+//        print_r($products);die;
+
+        $productsWithKeyId = [];
+        foreach($products as $product) {
+            $productsWithKeyId[$product['id']] = $product;
+        }
+        return $productsWithKeyId;
     }
 
     public function addProduct()

@@ -35,13 +35,13 @@
 <!--                        <option value="XXL">XXL</option>-->
 <!--                    </select>-->
 <!--                </td>-->
-                <td>&#36;<input name="price" class="price" value="<?php echo $products ?>" /></td>
+                <td>&#36;<input name="price" class="price" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] ?>" /></td>
                 <td>
                     <i class="fa fa-minus" title="Decrease Qty"></i>
                     <input class="qty" value="<?php echo $elem['amount']?>" name="qty" maxlength="2" />
                     <i class="fa fa-plus" title="Increase Qty"></i>
                 </td>
-                <td>&#36;<input name="cost" class="cost" value="23.97" /></td>
+                <td>&#36;<input name="cost" class="cost" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] * 3 ?>" /></td>
                 <td class="last"><i class="fa fa-trash-o" title="Delete Item"></i></td>
             </tr>
             <?php endforeach; ?>
