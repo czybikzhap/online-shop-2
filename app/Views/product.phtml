@@ -5,7 +5,6 @@
 
 <body>
 
-<?php foreach ($products as $product): ?>
     <div class="container ">
         <div class="card asics">
             <p class="price"><?php echo $product->getPrice() . 'Rub'?></p>
@@ -23,63 +22,19 @@
                 </div>
 
                 <form action="/add-to-cart" method="POST">
-                    <button > Add to Cart</button >
-                    <input type="hidden" name="product_id" value="<?php echo $product->getId(); ?>">
+                    <button> Add to Cart</button>
+                    <input type="hidden" name="product_id" value="<?php echo $product->getId(); ?>"
 
-                    <br><br>
                 </form>
-<!--                <form-->
-                    <div class="quantity-field" >
-                        <button
-                                class="value-button decrease-button"
-                                onclick="decreaseValue(this)"
-                                title="Azalt">-</button>
-                        <div class="number">0</div>
-                        <button
-                                class="value-button increase-button"
-                                onclick="increaseValue(this, 5)"
-                                title="Arrtır"
-                        >+
-                        </button>
-                    </div>
-<!--                </form>-->
 
             </div>
         </div>
-        <form action="/product" method="POST">
-            <button> Go to Product card</button>
-            <input type="hidden" name="product_id" value="<?php echo $product->getId() ?>">
-        </form>
     </div>
-<?php endforeach; ?>
 <div class="buttons">
-    <a href="cart" style="color:blue" class="register-link">Go to Cart</a>
-    <br>
-    <a href="profile" style="color:red" class="register-link">My Profile</a>
+    <a href="main" style="color:blue" class="register-link">Go to Main</a>
 </div>
 
 </body>
-
-
-<script>
-    function increaseValue(button, limit) {
-        const numberInput = button.parentElement.querySelector('.number');
-        var value = parseInt(numberInput.innerHTML, 10);
-        if(isNaN(value)) value = 0;
-        if(limit && value >= limit) return;
-        numberInput.innerHTML = value+1;
-    }
-
-
-    function decreaseValue(button) {
-        const numberInput = button.parentElement.querySelector('.number');
-        var value = parseInt(numberInput.innerHTML, 10);
-        if(isNaN(value)) value = 0;
-        if(value < 1) return;
-        numberInput.innerHTML = value-1;
-    }
-
-</script>
 
 <style>
     * {
@@ -250,28 +205,6 @@
         cursor: pointer;
     }
 
-    /* Button/ */
-    .container .card .contentBx button1 {
-        display: inline-block;
-        padding: 10px 20px;
-        background: #fff;
-        border-radius: 4px;
-        margin-top: 10px;
-        text-decoration: none;
-        font-weight: 600;
-        color: #111;
-        opacity: 0;
-        transform: translateY(50px);
-        transition: 0.5s;
-        border: none;
-    }
-    .container .card:hover .contentBx button1 {
-        opacity: 1;
-        transform: translateY(0px);
-        transform-delay: 0.75s;
-        cursor: pointer;
-    }
-
     .info {
         position: absolute;
         top: 1em;
@@ -295,71 +228,6 @@
     .info:hover + .text {
         display: block;
     }
-    .quantity-field {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 120px;
-        height: 40px;
-        margin: 0 auto;
-    }
-
-    .quantity-field .value-button{
-        border: 1px solid #ddd;
-        margin: 0px;
-        width: 40px;
-        height: 100%;
-        padding: 0;
-        background: #eee;
-        outline: none;
-        cursor: pointer;
-    }
-
-    .quantity-field .value-button:hover {
-        background: rgb(230, 230, 230);
-    }
-
-    .quantity-field .value-button:active{
-        background: rgb(210, 210, 210);
-    }
-
-    .quantity-field .decrease-button {
-        margin-right: -4px;
-        border-radius: 8px 0 0 8px;
-    }
-
-    .quantity-field .increase-button {
-        margin-left: -4px;
-        border-radius: 0 8px 8px 0;
-    }
-
-    .quantity-field .number{
-        display: inline-block;
-        text-align: center;
-        border: none;
-        border-top: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        margin: 0px;
-        width: 40px;
-        height: 100%;
-        line-height: 40px;
-        font-size: 11pt;
-        box-sizing: border-box;
-        background: white;
-        font-family: calibri;
-    }
-
-    .quantity-field .number::selection{
-        background: none;
-    }
-
-    /*
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    */
 
 
 </style>

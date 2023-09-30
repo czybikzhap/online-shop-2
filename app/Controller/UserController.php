@@ -1,16 +1,15 @@
 <?php
 
+namespace App\Controller;
+
+use App\Model\User;
+
 class UserController
 {
-    private PDO $pdo;
-
-    public function __construct()
+    public function signup(): array
     {
-        $this->pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
-    }
+        $errors = [];
 
-    public function signup(): void
-    {
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             $errors = $this->IsValidSignUp($_POST);
@@ -21,24 +20,25 @@ class UserController
                 $email = $_POST['email'];
                 $pwd = $_POST['password'];
 
-                $password = password_hash($pwd, PASSWORD_DEFAULT);
+                $hash = password_hash($pwd, PASSWORD_DEFAULT);
 
-                $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) 
-                VALUES (:name, :email, :password)");
-                $stmt->execute(['name' => $name, 'email' => $email, 'password' => $password]);
+                $user = new User($name, $email, $hash);
+                $user->createUser();
 
-
-                $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email ");
-                $stmt->execute(['email' => $email]);
-                $dbinfo = $stmt->fetch();
+                $dbinfo = User::getByEmail($email);
 
                 session_start();
-                $_SESSION['id'] = $dbinfo['id'];
+                $_SESSION['id'] = $dbinfo->getId();
 
                 header('Location:./main');
             }
         }
-        require_once "../Views/signup.html";
+        return [
+            'view' => 'signup',
+            'data' => [
+                'errors' => $errors
+            ]
+        ];
 
     }
 
@@ -70,10 +70,9 @@ class UserController
                 $errors['email'] = "некорректный email";
             }
 
-            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email ");
-            $stmt->execute(['email' => $email]);
-            $userData = $stmt->fetch();
-            if (!empty($userData['email'])) {
+            $dbinfo = User::getByEmail($email);
+
+            if (!empty($dbinfo)) {
                 $errors['email'] = 'пользователь с таким адресом электронной почты уже зарегистрирован';
             }
         }
@@ -96,6 +95,7 @@ class UserController
 
     public function login()
     {
+        $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             $errors = $this->isValidLogin($_POST);
@@ -106,24 +106,27 @@ class UserController
                 $email = $_POST['email'];
                 $pwd = $_POST['password'];
 
-                $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email ");
-                $stmt->execute(['email' => $email]);
-                $dbinfo = $stmt->fetch();
-                //print_r($dbinfo);
+                $dbinfo = User::getByEmail($email);
 
+                if ($dbinfo !== null) {
+                    if (!empty($dbinfo->getEmail()) && password_verify($pwd, $dbinfo->getHash())) {
+                        session_start();
+                        $_SESSION['id'] = $dbinfo->getId();
 
-                if (!empty($dbinfo['email']) && password_verify($pwd, $dbinfo['password'])) {
-                    session_start();
-                    $_SESSION['id'] = $dbinfo['id'];
-
-                    header('Location:./main');
-                } else {
-                    $errors['password'] = 'неверное имя пользователя и пароль';
+                        header('Location:./main');
+                    } else {
+                        $errors['password'] = 'неверное имя пользователя и пароль';
+                    }
                 }
 
             }
         }
-        require_once "../Views/login.phtml";
+        return [
+            'view' => 'login',
+            'data' => [
+                'errors' => $errors
+            ]
+        ];
 
     }
 
@@ -152,6 +155,7 @@ class UserController
     public function profile()
     {
         session_start();
+        $errors = [];
 
         if (!isset($_SESSION['id'])) {
             header('Location :/login');
@@ -165,7 +169,12 @@ class UserController
         //print_r($user);
 
 
-        require_once "../Views/profile.phtml";
+        return [
+            'view' => 'profile',
+            'data' => [
+                'errors' => $errors
+            ]
+        ];
     }
 }
 

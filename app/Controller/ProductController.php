@@ -4,24 +4,23 @@ namespace App\Controller;
 
 use App\Model\Product;
 
-class MainController
+class ProductController
 {
-    public function main()
+    public function product()
     {
         session_start();
 
         if (!isset($_SESSION['id'])) {
             header('Location :/login');
         }
+        $id = $_POST['product_id'];
 
-        print_r($_SESSION['id']);
-
-        $products = Product::getAll();
+        $product = Product::getById($id);
 
         return [
-            'view' => 'main',
+            'view' => 'product',
             'data' => [
-                'products' => $products
+                'product' => $product
             ]
         ];
     }

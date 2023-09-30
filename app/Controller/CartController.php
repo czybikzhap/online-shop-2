@@ -1,8 +1,12 @@
 <?php
 
+namespace App\Controller;
+
+use App\Model\Cart;
+
 class CartController
 {
-    public function cart()
+    public function cart(): array
     {
         session_start();
 
@@ -12,52 +16,25 @@ class CartController
 
         $userId = $_SESSION['id'];
 
-        $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
-        $cart = $this->getProductsInCart($userId, $pdo);
+        $cart = Cart::getProductsInCart($userId);
         //print_r($cart);
-        $productsWithKeyId = $this->productsWithKeyId($cart, $pdo);
+        $productsWithKeyId = Cart::productsWithKeyId($cart);
 
-        require_once "./../Views/cart.phtml";
+        return [
+            'view' => 'cart',
+            'data' => [
+                'cart' => $cart,
+                'productsWithKeyId' => $productsWithKeyId,
+            ]
+        ];
     }
 
-    private function getProductsInCart (int $userId, PDO $pdo): array
-    {
-        $cart = $pdo->prepare("SELECT * FROM cart WHERE user_id = :user_id");
-        $cart->execute(['user_id' => $userId]);
-
-        return $cart->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    private function productsWithKeyId(array $cart, PDO $pdo): array
-    {
-        $productIds = [];
-        foreach ($cart as $productInCart) {
-            $productIds[] = $productInCart['product_id'];
-        }
-        //print_r($productIds);
-
-        $productIds = implode(', ', $productIds);
-
-        $stmt = $pdo->query("SELECT * FROM products WHERE id in ($productIds)");
-        $products = $stmt->fetchAll();
-//        print_r($products);die;
-
-        $productsWithKeyId = [];
-        foreach($products as $product) {
-            $productsWithKeyId[$product['id']] = $product;
-        }
-        return $productsWithKeyId;
-    }
-
-    public function addProduct()
+    public function addProducts()
     {
         session_start();
         if (!isset($_SESSION['id'])) {
             header('Location :/login');
         }
-
-        $pdo = new PDO('pgsql:host=db; dbname=dbname', 'dbuser', 'dbpwd');
-
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
@@ -68,15 +45,17 @@ class CartController
                 $userId = $_SESSION['id'];
                 $productId = $_POST['product_id'];
 
-                $stmt = $pdo->prepare("INSERT INTO cart (user_id, product_id, amount) 
-                VALUES (:user_id, :product_id, 1)
-    ON CONFLICT (user_id, product_id) DO UPDATE SET amount = cart.amount + EXCLUDED.amount");
-                $stmt->execute(['user_id' => $userId, 'product_id' => $productId]);
-                header("Location: /main");
+                Cart::addProducts($userId, $productId);
+
+                header('Location :/main');
+            } else {
+
             }
 
         }
+
     }
+
 
     private function isValidAddProduct(array $data): array
     {
@@ -91,5 +70,11 @@ class CartController
         }
         return $errors;
     }
+
+
+
+
+
+
 
 }

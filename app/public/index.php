@@ -1,77 +1,43 @@
 <?php
 
+
 $uri = $_SERVER['REQUEST_URI'];
 
-spl_autoload_register(function (string $className) {
-    require_once "../Controller/$className.php";
+spl_autoload_register(function ($class) {
+    $path = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
+
+    $appRoot = dirname(__DIR__);
+    $path = preg_replace('#^App#', $appRoot, $path);
+
+    if (file_exists($path)) {
+        require_once $path;
+        return true;
+    }
+
+    return false;
 });
 
-$routes = [
-    '/signup' => [
-        'class' => 'UserController',
-        'method' => 'signup'
-    ],
-    '/login' => [
-        'class' => 'UserController',
-        'method' => 'login'
-    ],
-    '/main' => [
-        'class' => 'MainController',
-        'method' => 'main'
-    ],
-    '/cart' => [
-        'class' => 'CartController',
-        'method' => 'cart'
-    ],
-    '/addProduct' => [
-        'class' => 'CartController',
-        'method' => 'addProduct'
-    ],
-    '/profile' => [
-        'class' => 'UserController',
-        'method' => 'profile'
-    ],
-];
+$routes = require_once '../config/routes.php';
 
 if (isset($routes[$uri])) {
-    $handlers = $routes[$uri];
-
-    $class = $handlers['class'];
-    $method = $handlers['method'];
+    list($class, $method) = $routes[$uri];
+    //print_r($class);
 
     $obj = new $class();
-    $obj->$method();
+    $result = $obj->$method();
+
+    if (!empty($result)) {
+        $viewName = $result['view'];
+        $data = $result['data'];
+
+        extract($data);
+
+        require_once "../Views/$viewName.phtml";
+    }
 
 } else {
     require_once '../Views/404.html';
-};
-
-//if ($uri === '/signup') {
-//    $controller = new UserController();
-//    $controller->signup();
-//} elseif ($uri === '/login') {
-//    $controller = new UserController();
-//    $controller->login();
-//} elseif ($uri === '/main') {
-//    $controller = new MainController();
-//    $controller->main();
-//
-//    http_response_code(403);
-//} elseif ($uri === '/logout') {
-//    session_start();
-//    session_destroy();
-//}  elseif ($uri === '/cart') {
-//    $controller = new CartController();
-//    $controller->cart();
-//} elseif ($uri === '/add-to-cart') {
-//    $controller = new CartController();
-//    $controller->addProduct();
-//} elseif ($uri === '/profile') {
-//    $controller = new UserController();
-//    $controller->profile();
-//} else {
-//    require_once "../Views/404.html";
-//}
+}
 
 ?>
 
