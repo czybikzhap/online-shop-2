@@ -41,8 +41,11 @@
                     <input class="qty" value="<?php echo $elem['amount']?>" name="qty" maxlength="2" />
                     <i class="fa fa-plus" title="Increase Qty"></i>
                 </td>
-                <td>&#36;<input name="cost" class="cost" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] * 3 ?>" /></td>
-                <td class="last"><i class="fa fa-trash-o" title="Delete Item"></i></td>
+                <td>&#36;<input name="cost" class="cost" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] * $elem['amount'] ?>" /></td>
+                <form action="/deleteProduct" method="POST">
+                    <td class="button"><button type="submit" class="fa fa-trash-o" title="Delete Item" ></button></td>
+
+                </form>
             </tr>
             <?php endforeach; ?>
         </table>
@@ -55,14 +58,17 @@
                 &#36;<input name="total" id="total" value="53.96" />
             </div>
         </div>
+        <form action="/deleteProduct" method="POST">
         <div id="button">
-            <a href=""><h1>Buy</h1><i class="fa fa-shopping-cart"></i></a>
+            <h1>DEL</h1><button type="submit" class="fa fa-shopping-cart"></button>
         </div>
+        </form>
     </div>
     <div class="hide">
         <p>An interactive shopping basket </p>
     </div>
 </div>
+
 
 <style>
 
@@ -176,7 +182,7 @@
         border: 0px;
     }
 
-    #basket table td.last{
+    #basket table td.button{
         border:none;
     }
 

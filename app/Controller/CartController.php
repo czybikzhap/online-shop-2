@@ -19,6 +19,7 @@ class CartController
         $cart = Cart::getProductsInCart($userId);
         //print_r($cart);
         $productsWithKeyId = Cart::productsWithKeyId($cart);
+        //print_r($productsWithKeyId);die;
 
         return [
             'view' => 'cart',
@@ -29,26 +30,28 @@ class CartController
         ];
     }
 
-    public function addProducts()
+    public function addProducts(): void
     {
         session_start();
         if (!isset($_SESSION['id'])) {
-            header('Location :/login');
+            header('Location: /login');
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            //header('Location: /main');
+            //print_r($_POST['product_id']);die;
 
             $errors = $this->isValidAddProduct($_POST);
 
             if (empty($errors)) {
+                // print_r($_POST['product_id']);die;
 
                 $userId = $_SESSION['id'];
                 $productId = $_POST['product_id'];
 
-                Cart::addProducts($userId, $productId);
+                Cart::addProduct($userId, $productId);
 
-                header('Location :/main');
-            } else {
+                header('Location: /main');
 
             }
 
@@ -69,6 +72,35 @@ class CartController
             }
         }
         return $errors;
+    }
+
+    public function delete(): void
+    {
+        session_start();
+        if (!isset($_SESSION['id'])) {
+            header('Location: /login');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
+            Cart::delete($_SESSION['id']);
+        }
+    }
+
+    public function deleteProduct(): void
+    {
+        session_start();
+        if (!isset($_SESSION['id'])) {
+            header('Location: /login');
+       } //else {
+//            header('Location: /cart');
+//        }
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            print_r($_POST);
+            Cart::deleteProduct($_SESSION['id'], $_POST['product_id']);
+
+        }
     }
 
 

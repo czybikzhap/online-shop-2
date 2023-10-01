@@ -6,7 +6,7 @@ use App\Model\Product;
 
 class ProductController
 {
-    public function product()
+    public function product(): array
     {
         session_start();
 

@@ -17,7 +17,7 @@ services:
     restart: always
     volumes:
       - ./.docker/conf/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ./.docker/conf/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./.docker/conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - .:/var/www/html
 
   db:
