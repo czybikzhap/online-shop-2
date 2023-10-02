@@ -17,9 +17,14 @@ class CartController
         $userId = $_SESSION['id'];
 
         $cart = Cart::getProductsInCart($userId);
-        //print_r($cart);
-        $productsWithKeyId = Cart::productsWithKeyId($cart);
-        //print_r($productsWithKeyId);die;
+        //print_r($cart);die;
+
+        if (empty($cart)) {
+            header('Location: /main');
+        } else {
+            $productsWithKeyId = Cart::productsWithKeyId($cart);
+//            print_r($productsWithKeyId);die;
+        }
 
         return [
             'view' => 'cart',
@@ -85,6 +90,7 @@ class CartController
 
             Cart::delete($_SESSION['id']);
         }
+        header('Location: /main');
     }
 
     public function deleteProduct(): void
@@ -92,13 +98,12 @@ class CartController
         session_start();
         if (!isset($_SESSION['id'])) {
             header('Location: /login');
-       } //else {
-//            header('Location: /cart');
-//        }
+       }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            print_r($_POST);
-            Cart::deleteProduct($_SESSION['id'], $_POST['product_id']);
+//            print_r($_POST);
+            Cart::deleteProduct($_SESSION['id'], $_POST['id']);
+            header('Location: /cart');
 
         }
     }

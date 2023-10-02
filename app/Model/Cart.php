@@ -56,7 +56,7 @@ class Cart
 
         $stmt = ConnectFactory::connectDB()->query(
             "SELECT * FROM products WHERE id in ($productIds)");
-        $products = $stmt->fetchAll();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         //print_r($products);
 
         $productsWithKeyId = [];
