@@ -16,6 +16,7 @@ class MainController
 
         print_r($_SESSION['id']);
 
+
         $products = Product::getAll();
 
         return [

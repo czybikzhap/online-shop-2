@@ -152,10 +152,9 @@ class UserController
         return $errors;
     }
 
-    public function profile()
+    public function profile(): array
     {
         session_start();
-        $errors = [];
 
         if (!isset($_SESSION['id'])) {
             header('Location :/login');
@@ -163,16 +162,12 @@ class UserController
 
         $userId = $_SESSION['id'];
 
-        $user = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
-        $user->execute(['id' => $userId]);
-        $user = $user->fetch(PDO::FETCH_ASSOC);
-        //print_r($user);
-
+        $user = User::getById($userId);
 
         return [
             'view' => 'profile',
             'data' => [
-                'errors' => $errors
+                'user' => $user,
             ]
         ];
     }

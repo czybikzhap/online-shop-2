@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Model\ConnectFactory;
+use PDO;
 
 class User
 {
@@ -47,6 +48,13 @@ class User
 
         return $user;
 
+    }
+
+    public static function getById(string $userId): array
+    {
+        $user = ConnectFactory::connectDB()->prepare("SELECT * FROM users WHERE id = :id");
+        $user->execute(['id' => $userId]);
+        return $user->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
