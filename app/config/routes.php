@@ -11,6 +11,7 @@ return [
     '/signup' => [UserController::class, 'signup'],
     '/login' => [UserController::class, 'login'],
     '/profile' => [UserController::class, 'profile'],
+    '/logout' => [UserController::class, 'logout'],
     '/main' => [MainController::class, 'main'],
     '/cart' => [CartController::class, 'cart'],
     '/add-to-cart' => [CartController::class, 'addProducts'],

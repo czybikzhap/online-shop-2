@@ -27,7 +27,6 @@ class Product
 
         $stmt = ConnectFactory::connectDB()->query("SELECT * FROM products");
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        //print_r($data);
 
         $productsWithKeyId = [];
         foreach($data as $product) {
@@ -58,7 +57,7 @@ class Product
         $stmt = ConnectFactory::connectDB()->query(
             "SELECT * FROM products WHERE id in ($id)");
         $product = $stmt->fetch();
-        //print_r($product);die;
+
         if (empty($product)) {
             return null;
         }
@@ -70,7 +69,6 @@ class Product
             $product['description'],
             $product['image url']
         );
-//        print_r($object);die;
 
         return $object;
     }

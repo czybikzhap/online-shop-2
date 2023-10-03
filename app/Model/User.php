@@ -4,8 +4,6 @@ namespace App\Model;
 
 use App\Model\ConnectFactory;
 
-use PDO;
-
 class User
 {
     private string $name;

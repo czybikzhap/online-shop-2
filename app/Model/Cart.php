@@ -3,12 +3,10 @@
 namespace App\Model;
 
 use App\Model\ConnectFactory;
-
 use PDO;
 
 class Cart
 {
-
     private int $userId;
     private int $productId;
 
@@ -50,14 +48,12 @@ class Cart
         foreach ($cart as $productInCart) {
             $productIds[] = $productInCart['product_id'];
         }
-        //print_r($productIds);
 
         $productIds = implode(', ', $productIds);
 
         $stmt = ConnectFactory::connectDB()->query(
             "SELECT * FROM products WHERE id in ($productIds)");
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        //print_r($products);
 
         $productsWithKeyId = [];
         foreach($products as $product) {
@@ -72,8 +68,6 @@ class Cart
                 VALUES (:user_id, :product_id, 1)
     ON CONFLICT (user_id, product_id) DO UPDATE SET amount = cart.amount + EXCLUDED.amount");
         $stmt->execute(['user_id' => $userId, 'product_id' => $productId]);
-
-       // return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     }
 
@@ -90,6 +84,5 @@ class Cart
        WHERE user_id = :user_id AND product_id = :product_id');
         $stmt->execute(['user_id' => $userId, 'product_id' => $productId]);
     }
-
 
 }

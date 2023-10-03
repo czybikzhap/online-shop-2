@@ -17,13 +17,13 @@ class CartController
         $userId = $_SESSION['id'];
 
         $cart = Cart::getProductsInCart($userId);
-        //print_r($cart);die;
+
+        $totalCost = $this->totalCost();
 
         if (empty($cart)) {
             header('Location: /main');
         } else {
             $productsWithKeyId = Cart::productsWithKeyId($cart);
-//            print_r($productsWithKeyId);die;
         }
 
         return [
@@ -31,6 +31,7 @@ class CartController
             'data' => [
                 'cart' => $cart,
                 'productsWithKeyId' => $productsWithKeyId,
+                'totalCost' => $totalCost,
             ]
         ];
     }
@@ -43,13 +44,10 @@ class CartController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-            //header('Location: /main');
-            //print_r($_POST['product_id']);die;
 
             $errors = $this->isValidAddProduct($_POST);
 
             if (empty($errors)) {
-                // print_r($_POST['product_id']);die;
 
                 $userId = $_SESSION['id'];
                 $productId = $_POST['product_id'];
@@ -79,6 +77,36 @@ class CartController
         return $errors;
     }
 
+    private function totalCost(): int
+    {
+        $userId = $_SESSION['id'];
+
+        $cart = Cart::getProductsInCart($userId);
+        $productsWithKeyId = Cart::productsWithKeyId($cart);
+
+        $idPrice = [];
+        foreach ($productsWithKeyId as $elem) {
+            $idPrice[$elem['id']] = $elem['price'];
+        }
+
+        $idAmount = [];
+        foreach ($cart as $elem) {
+            $idAmount[$elem['product_id']] = $elem['amount'];
+        }
+
+        $total = [];
+        foreach ($idAmount as $key1 => $value1) {
+            foreach ($idPrice as $key2 => $value2) {
+                if($key1 === $key2) {
+                    $total[$key1] = $value2 * $value1;
+                }
+            }
+        }
+
+        return array_sum($total);
+
+    }
+
     public function delete(): void
     {
         session_start();
@@ -101,8 +129,9 @@ class CartController
        }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
-//            print_r($_POST);
-            Cart::deleteProduct($_SESSION['id'], $_POST['id']);
+
+            Cart::deleteProduct($_SESSION['id'], $_POST['product_id']);
+
             header('Location: /cart');
 
         }

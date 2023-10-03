@@ -44,7 +44,7 @@
                 <td>&#36;<input name="cost" class="cost" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] * $elem['amount'] ?>" /></td>
                 <form action="/deleteProduct" method="POST">
                     <td class="button"><button type="submit" class="fa fa-trash-o" title="Delete Item" ></button></td>
-                    <input name="id" class="price" value="<?php echo $elem['product_id'] ?>" />
+                    <input name="product_id" class="price" value="<?php echo $elem['product_id'] ?>" />
                 </form>
             </tr>
             <?php endforeach; ?>
@@ -52,10 +52,14 @@
         <div id="totalAmount">
             <div class="left">
                 <h1>Total Cost</h1>
-                <p>*Including all taxes</p>
+                <p><div class="buttons">
+                    <br><br><br><br><br><br>
+                    <a href="main" style="color:purple" class="register-link">Go to Main</a>
+
+                </div></p>
             </div>
             <div class="right">
-                &#36;<input name="total" id="total" value="53.96" />
+                &#36;<input name="total" id="total" value="<?php echo $totalCost ?>" />
             </div>
         </div>
         <form action="/delete" method="POST">
