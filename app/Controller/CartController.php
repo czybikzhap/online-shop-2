@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Cart;
+use App\Model\Product;
 
 class CartController
 {
@@ -18,22 +19,32 @@ class CartController
 
         $cart = Cart::getProductsInCart($userId);
 
-        $totalCost = $this->totalCost();
-
         if (empty($cart)) {
-            header('Location: /main');
+            $errors= ' ';
         } else {
-            $productsWithKeyId = Cart::productsWithKeyId($cart);
+            $productsWithKeyId = Product::productsWithKeyId($cart);
+            $totalCost = $this->totalCost();
         }
 
+        if (empty($cart)) {
         return [
             'view' => 'cart',
             'data' => [
                 'cart' => $cart,
-                'productsWithKeyId' => $productsWithKeyId,
-                'totalCost' => $totalCost,
+                'errors' => $errors,
             ]
         ];
+        } else {
+            return [
+                'view' => 'cart',
+                'data' => [
+                    'cart' => $cart,
+                    'productsWithKeyId' => $productsWithKeyId,
+                    'totalCost' => $totalCost,
+                ]
+            ];
+        }
+
     }
 
     public function addProducts(): void
@@ -82,7 +93,7 @@ class CartController
         $userId = $_SESSION['id'];
 
         $cart = Cart::getProductsInCart($userId);
-        $productsWithKeyId = Cart::productsWithKeyId($cart);
+        $productsWithKeyId = Product::productsWithKeyId($cart);
 
         $idPrice = [];
         foreach ($productsWithKeyId as $elem) {

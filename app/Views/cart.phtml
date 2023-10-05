@@ -16,25 +16,9 @@
                 <th></th>
             </tr>
             <tr>
-                <?php foreach ($cart as $elem): ?>
-                <td>Product  <?php echo $elem['product_id']?></td>
-<!--                <td><select class="color" name="mySelect" onChange="this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor">-->
-<!--                        <option value="1" style="background-color:#FFFFFF"></option>-->
-<!--                        <option value="2" style="background-color:#000000"></option>-->
-<!--                        <option value="3" style="background-color:#FF0000"></option>-->
-<!--                        <option value="4" style="background-color:#008000"></option>-->
-<!--                        <option value="5" style="background-color:#0000FF"></option>-->
-<!--                    </select>-->
-<!--                </td>-->
-<!--                <td>-->
-<!--                    <select class="size">-->
-<!--                        <option value="S">S</option>-->
-<!--                        <option value="M">M</option>-->
-<!--                        <option value="L">L</option>-->
-<!--                        <option value="XL">XL</option>-->
-<!--                        <option value="XXL">XXL</option>-->
-<!--                    </select>-->
-<!--                </td>-->
+                <?php if (!empty($cart)) {foreach($cart as $elem): ?>
+                <td>Product  <?php echo $elem['product_id'] ?></td>
+
                 <td>&#36;<input name="price" class="price" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] ?>" /></td>
                 <td>
                     <i class="fa fa-minus" title="Decrease Qty"></i>
@@ -47,7 +31,7 @@
                     <input name="product_id" class="price" value="<?php echo $elem['product_id'] ?>" />
                 </form>
             </tr>
-            <?php endforeach; ?>
+            <?php endforeach;} ?>
         </table>
         <div id="totalAmount">
             <div class="left">
@@ -59,7 +43,11 @@
                 </div></p>
             </div>
             <div class="right">
-                &#36;<input name="total" id="total" value="<?php echo $totalCost ?>" />
+                &#36;<input name="total" id="total" value="<?php if (!empty($cart)) {
+                    echo $totalCost;
+                    } else {
+                    echo $errors;
+                } ?>" />
             </div>
         </div>
         <form action="/delete" method="POST">

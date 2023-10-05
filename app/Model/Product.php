@@ -73,6 +73,26 @@ class Product
         return $object;
     }
 
+    public static function productsWithKeyId(array $cart): array
+    {
+        $productIds = [];
+        foreach ($cart as $productInCart) {
+            $productIds[] = $productInCart['product_id'];
+        }
+
+        $productIds = implode(', ', $productIds);
+
+        $stmt = ConnectFactory::connectDB()->query(
+            "SELECT * FROM products WHERE id in ($productIds)");
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $productsWithKeyId = [];
+        foreach($products as $product) {
+            $productsWithKeyId[$product['id']] = $product;
+        }
+        return $productsWithKeyId;
+    }
+
 
 
 
