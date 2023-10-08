@@ -16,22 +16,28 @@
                 <th></th>
             </tr>
             <tr>
-                <?php if (!empty($cart)) {foreach($cart as $elem): ?>
-                <td>Product  <?php echo $elem['product_id'] ?></td>
+                <?php  if (!empty($cartItems)) {
+                    foreach($cartItems as $elem): ?>
+                <td>Product  <?php echo $elem->getProductId() ?></td>
 
-                <td>&#36;<input name="price" class="price" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] ?>" /></td>
+                <td>&#36;<input name="price" class="price"
+                                value="<?php echo $productsInCart[$elem->getProductId()]['price'] ?>" /></td>
                 <td>
                     <i class="fa fa-minus" title="Decrease Qty"></i>
-                    <input class="qty" value="<?php echo $elem['amount']?>" name="qty" maxlength="2" />
+                    <input class="qty" value="<?php echo $elem->getAmount() ?>" name="qty" maxlength="2" />
                     <i class="fa fa-plus" title="Increase Qty"></i>
                 </td>
-                <td>&#36;<input name="cost" class="cost" value="<?php echo $productsWithKeyId[$elem['product_id']]['price'] * $elem['amount'] ?>" /></td>
+                <td>&#36;<input name="cost" class="cost"
+                                value="<?php echo $productsInCart[$elem->getProductId()]['price'] * $elem->getAmount() ?>" /></td>
                 <form action="/deleteProduct" method="POST">
                     <td class="button"><button type="submit" class="fa fa-trash-o" title="Delete Item" ></button></td>
-                    <input name="product_id" class="price" value="<?php echo $elem['product_id'] ?>" />
+                    <input name="product_id" class="price" value="<?php echo $elem->getProductId() ?>" />
                 </form>
             </tr>
-            <?php endforeach;} ?>
+            <?php endforeach;
+            } else {
+                    print_r("<ПУСТО>");
+            } ?>
         </table>
         <div id="totalAmount">
             <div class="left">
@@ -43,11 +49,9 @@
                 </div></p>
             </div>
             <div class="right">
-                &#36;<input name="total" id="total" value="<?php if (!empty($cart)) {
+                &#36;<input name="total" id="total" value="<?php if (!empty($cartItems)) {
                     echo $totalCost;
-                    } else {
-                    echo $errors;
-                } ?>" />
+                    } ?>" />
             </div>
         </div>
         <form action="/delete" method="POST">

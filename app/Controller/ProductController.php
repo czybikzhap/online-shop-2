@@ -3,15 +3,22 @@
 namespace App\Controller;
 
 use App\Model\Product;
+use App\Service\AuthenticateService;
 
 class ProductController
 {
+
+    private AuthenticateService $authenticateService;
+
+    public function __costruct()
+    {
+        $this->authenticateService = new AuthenticateService();
+    }
     public function product(): array
     {
-        session_start();
-
-        if (!isset($_SESSION['id'])) {
-            header('Location :/login');
+        $user = $this->authenticateService->getUser();
+        if ($user === null) {
+            header("Location: /login");
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {

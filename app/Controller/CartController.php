@@ -2,44 +2,46 @@
 
 namespace App\Controller;
 
-use App\Model\Cart;
+use App\Model\CartItem;
 use App\Model\Product;
+use App\Model\User;
+use App\Service\AuthenticateService;
 
 class CartController
 {
+    private AuthenticateService $authenticateService;
+
+    public function __costruct()
+    {
+        $this->authenticateService = new AuthenticateService();
+    }
+
+
     public function cart(): array
     {
-        session_start();
-
-        if (!isset($_SESSION['id'])) {
-            header('Location :/login');
+        $user = $this->authenticateService->getUser();
+        if ($user === null) {
+            header("Location: /login");
         }
 
-        $userId = $_SESSION['id'];
+        $cartItems = $user->cartItems();
 
-        $cart = Cart::getProductsInCart($userId);
-
-        if (empty($cart)) {
-            $errors= ' ';
-        } else {
-            $productsWithKeyId = Product::productsWithKeyId($cart);
-            $totalCost = $this->totalCost();
-        }
-
-        if (empty($cart)) {
-        return [
-            'view' => 'cart',
-            'data' => [
-                'cart' => $cart,
-                'errors' => $errors,
-            ]
-        ];
-        } else {
+        if (empty($cartItems)) {
             return [
                 'view' => 'cart',
                 'data' => [
-                    'cart' => $cart,
-                    'productsWithKeyId' => $productsWithKeyId,
+                    'cart' => $cartItems,
+                ]
+            ];
+        } else {
+            $productsInCart = $user->productsInCart();
+            $totalCost = $user->getTotalCost();
+
+            return [
+                'view' => 'cart',
+                'data' => [
+                    'cartItems' => $cartItems,
+                    'productsInCart' => $productsInCart,
                     'totalCost' => $totalCost,
                 ]
             ];
@@ -47,7 +49,7 @@ class CartController
 
     }
 
-    public function addProducts(): void
+    public function addProduct(): void
     {
         session_start();
         if (!isset($_SESSION['id'])) {
@@ -63,7 +65,7 @@ class CartController
                 $userId = $_SESSION['id'];
                 $productId = $_POST['product_id'];
 
-                Cart::addProduct($userId, $productId);
+                CartItem::addProduct($userId, $productId);
 
                 header('Location: /main');
 
@@ -88,35 +90,6 @@ class CartController
         return $errors;
     }
 
-    private function totalCost(): int
-    {
-        $userId = $_SESSION['id'];
-
-        $cart = Cart::getProductsInCart($userId);
-        $productsWithKeyId = Product::productsWithKeyId($cart);
-
-        $idPrice = [];
-        foreach ($productsWithKeyId as $elem) {
-            $idPrice[$elem['id']] = $elem['price'];
-        }
-
-        $idAmount = [];
-        foreach ($cart as $elem) {
-            $idAmount[$elem['product_id']] = $elem['amount'];
-        }
-
-        $total = [];
-        foreach ($idAmount as $key1 => $value1) {
-            foreach ($idPrice as $key2 => $value2) {
-                if($key1 === $key2) {
-                    $total[$key1] = $value2 * $value1;
-                }
-            }
-        }
-
-        return array_sum($total);
-
-    }
 
     public function delete(): void
     {
@@ -127,7 +100,7 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            Cart::delete($_SESSION['id']);
+            CartItem::deleteByUserId ($_SESSION['id']);
         }
         header('Location: /main');
     }
@@ -141,7 +114,7 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            Cart::deleteProduct($_SESSION['id'], $_POST['product_id']);
+            CartItem::deleteProduct($_SESSION['id'], $_POST['product_id']);
 
             header('Location: /cart');
 

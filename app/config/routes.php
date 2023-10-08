@@ -14,7 +14,7 @@ return [
     '/logout' => [UserController::class, 'logout'],
     '/main' => [MainController::class, 'main'],
     '/cart' => [CartController::class, 'cart'],
-    '/add-to-cart' => [CartController::class, 'addProducts'],
+    '/add-to-cart' => [CartController::class, 'addProduct'],
     '/deleteProduct' => [CartController::class, 'deleteProduct'],
     '/delete' => [CartController::class, 'delete'],
     '/product' => [ProductController::class, 'product'],

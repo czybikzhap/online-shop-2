@@ -3,15 +3,22 @@
 namespace App\Controller;
 
 use App\Model\Product;
+use App\Service\AuthenticateService;
 
 class MainController
 {
-    public function main()
-    {
-        session_start();
 
-        if (!isset($_SESSION['id'])) {
-            header('Location :/login');
+//    private AuthenticateService $authenticateService;
+//
+//    public function __costruct()
+//    {
+//        $this->authenticateService = new AuthenticateService();
+//    }
+    public function main(): array
+    {
+        $user = $this->authenticateService->getUser();
+        if ($user === null) {
+            header("Location: /login");
         }
 
         print_r($_SESSION['id']);

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Model\CartItem;
+use App\Model\Product;
 use App\Model\User;
 
 class UserController
@@ -177,6 +179,8 @@ class UserController
         session_start();
         unset($_SESSION['id']);
     }
+
+
 }
 
 

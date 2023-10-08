@@ -10,16 +10,19 @@
             <img src="https://cs14.pikabu.ru/post_img/big/2021/05/12/3/1620786394143521977.jpg">
         </div>
         <div class="contentBx  ">
-            <h2><?php echo "My name: " . " " . $user['name']?></h2>
+            <h2><?php echo "My name: " . " " . $user->getName() ?></h2>
 
             <div class="size">
-                <h3><?php echo "My email: " . " " . $user['email']?></h3>
+                <h3><?php echo "My email: " . " " . $user->getEmail() ?></h3>
             </div>
+
 
         </div>
     </div>
 
-
+</div>
+<div class="buttons">
+    <a href="main" style="color:orangered" class="register-link">Go to Main</a>
 </div>
 
 </body>

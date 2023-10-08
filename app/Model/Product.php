@@ -73,13 +73,8 @@ class Product
         return $object;
     }
 
-    public static function productsWithKeyId(array $cart): array
+    public static function getProductIds(array $productIds): array|null
     {
-        $productIds = [];
-        foreach ($cart as $productInCart) {
-            $productIds[] = $productInCart['product_id'];
-        }
-
         $productIds = implode(', ', $productIds);
 
         $stmt = ConnectFactory::connectDB()->query(
@@ -90,6 +85,7 @@ class Product
         foreach($products as $product) {
             $productsWithKeyId[$product['id']] = $product;
         }
+
         return $productsWithKeyId;
     }
 
