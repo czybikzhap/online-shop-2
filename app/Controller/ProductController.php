@@ -10,7 +10,7 @@ class ProductController
 
     private AuthenticateService $authenticateService;
 
-    public function __costruct()
+    public function __construct()
     {
         $this->authenticateService = new AuthenticateService();
     }

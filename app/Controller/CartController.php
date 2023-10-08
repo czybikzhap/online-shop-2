@@ -11,7 +11,7 @@ class CartController
 {
     private AuthenticateService $authenticateService;
 
-    public function __costruct()
+    public function __construct()
     {
         $this->authenticateService = new AuthenticateService();
     }
@@ -51,9 +51,9 @@ class CartController
 
     public function addProduct(): void
     {
-        session_start();
-        if (!isset($_SESSION['id'])) {
-            header('Location: /login');
+        $user = $this->authenticateService->getUser();
+        if ($user === null) {
+            header("Location: /login");
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -93,9 +93,9 @@ class CartController
 
     public function delete(): void
     {
-        session_start();
-        if (!isset($_SESSION['id'])) {
-            header('Location: /login');
+        $user = $this->authenticateService->getUser();
+        if ($user === null) {
+            header("Location: /login");
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -107,10 +107,10 @@ class CartController
 
     public function deleteProduct(): void
     {
-        session_start();
-        if (!isset($_SESSION['id'])) {
-            header('Location: /login');
-       }
+        $user = $this->authenticateService->getUser();
+        if ($user === null) {
+            header("Location: /login");
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
@@ -120,11 +120,5 @@ class CartController
 
         }
     }
-
-
-
-
-
-
 
 }
