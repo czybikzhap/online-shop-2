@@ -40,9 +40,9 @@ class CartController
             return [
                 'view' => 'cart',
                 'data' => [
-                    'cartItems' => $cartItems,
+                    'cartItems'      => $cartItems,
                     'productsInCart' => $productsInCart,
-                    'totalCost' => $totalCost,
+                    'totalCost'      => $totalCost,
                 ]
             ];
         }

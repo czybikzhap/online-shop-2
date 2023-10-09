@@ -13,9 +13,9 @@ class CartItem
 
     public function __construct(int $userId, $productId, $amount)
     {
-        $this->userId = $userId;
+        $this->userId    = $userId;
         $this->productId = $productId;
-        $this->amount = $amount;
+        $this->amount    = $amount;
     }
     public static function addProduct(int $userId, int $productId): void
     {

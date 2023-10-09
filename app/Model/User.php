@@ -17,9 +17,9 @@ class User
     public function __construct(string $name, string $email, string $hash)
     {
 
-        $this->name = $name;
+        $this->name  = $name;
         $this->email = $email;
-        $this->hash = $hash;
+        $this->hash  = $hash;
     }
 
     public function createUser(): array|false
@@ -41,8 +41,8 @@ class User
         if (empty($data)) {
             return null;
         }
-        $name = $data['name'];
-        $email = $data['email'];
+        $name     = $data['name'];
+        $email    = $data['email'];
         $password = $data['password'];
 
         $user = new self($name, $email, $password);
@@ -78,9 +78,9 @@ class User
         $totalCost = 0;
         foreach ($cartItems as $elem) {
             $productId = $elem->getProductId();
-            $product = $productsWithKeyId[$productId];
+            $product   = $productsWithKeyId[$productId];
 
-            $price = $product['price'];
+            $price  = $product['price'];
             $amount = $elem->getAmount();
 
             $totalCost = $totalCost + $price * $amount;

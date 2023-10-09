@@ -5,9 +5,17 @@ namespace App\Controller;
 use App\Model\CartItem;
 use App\Model\Product;
 use App\Model\User;
+use App\Service\AuthenticateService;
 
 class UserController
 {
+    private AuthenticateService $authenticateService;
+
+    public function __construct()
+    {
+        $this->authenticateService = new AuthenticateService();
+    }
+
     public function signup(): array
     {
         $errors = [];
@@ -95,7 +103,7 @@ class UserController
         return $errors;
     }
 
-    public function login()
+    public function login(): array
     {
         $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -108,21 +116,17 @@ class UserController
                 $email = $_POST['email'];
                 $pwd = $_POST['password'];
 
-                $dbinfo = User::getByEmail($email);
+                $user = $this->authenticateService->authenticate($email, $pwd);
 
-                if ($dbinfo !== null) {
-                    if (!empty($dbinfo->getEmail()) && password_verify($pwd, $dbinfo->getHash())) {
-                        session_start();
-                        $_SESSION['id'] = $dbinfo->getId();
-
-                        header('Location:./main');
-                    } else {
-                        $errors['password'] = 'неверное имя пользователя и пароль';
-                    }
+                if ($user !== null) {
+                    header('Location:./main');
+                } else {
+                    $errors['password'] = 'неверное имя пользователя и пароль';
                 }
 
             }
         }
+
         return [
             'view' => 'login',
             'data' => [
