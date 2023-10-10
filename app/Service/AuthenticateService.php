@@ -44,6 +44,19 @@ class AuthenticateService
         return null;
     }
 
+    public function logout(): void
+    {
+        session_start();
+        session_destroy();
+
+        unset($this->user);
+    }
+
+    public function getId(): int
+    {
+        return $this->user->getId();
+    }
+
 
 
 }

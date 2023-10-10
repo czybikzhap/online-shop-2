@@ -35,10 +35,7 @@ class UserController
                 $user = new User($name, $email, $hash);
                 $user->createUser();
 
-                $dbinfo = User::getByEmail($email);
-
-                session_start();
-                $_SESSION['id'] = $dbinfo->getId();
+                $_SESSION['id'] = $this->authenticateService->getId();
 
                 header('Location:./main');
             }
@@ -160,13 +157,13 @@ class UserController
 
     public function profile(): array
     {
-        session_start();
+        $user = $this->authenticateService->getUser();
 
-        if (!isset($_SESSION['id'])) {
-            header('Location :/login');
+        if ($user === null) {
+            header('Location:./login');
         }
 
-        $userId = $_SESSION['id'];
+        $userId = $this->authenticateService->getId();
 
         $user = User::getById($userId);
 
@@ -180,8 +177,7 @@ class UserController
 
     public function logout(): void
     {
-        session_start();
-        unset($_SESSION['id']);
+        $this->authenticateService->logout();
     }
 
 
