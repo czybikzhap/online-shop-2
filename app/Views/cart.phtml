@@ -21,14 +21,14 @@
                 <td>Product  <?php echo $elem->getProductId() ?></td>
 
                 <td>&#36;<input name="price" class="price"
-                                value="<?php echo $productsInCart[$elem->getProductId()]['price'] ?>" /></td>
+                                value="<?php echo $productsInCart[$elem->getProductId()]->getPrice(); ?>" /></td>
                 <td>
                     <i class="fa fa-minus" title="Decrease Qty"></i>
-                    <input class="qty" value="<?php echo $elem->getAmount() ?>" name="qty" maxlength="2" />
+                    <input class="qty" value="<?php echo $elem->getAmount() ?>" name="qty" axlength="2" />
                     <i class="fa fa-plus" title="Increase Qty"></i>
                 </td>
                 <td>&#36;<input name="cost" class="cost"
-                                value="<?php echo $productsInCart[$elem->getProductId()]['price'] * $elem->getAmount() ?>" /></td>
+                                value="<?php echo $productsInCart[$elem->getProductId()]->getPrice() * $elem->getAmount() ?>" /></td>
                 <form action="/deleteProduct" method="POST">
                     <td class="button"><button type="submit" class="fa fa-trash-o" title="Delete Item" ></button></td>
                     <input name="product_id" class="price" value="<?php echo $elem->getProductId() ?>" />

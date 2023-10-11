@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use App\Model\ConnectFactory;
 use PDO;
 
 class CartItem
@@ -38,14 +37,6 @@ class CartItem
         return self::hydrateAll($data);
     }
 
-    public static function getProductsInCart (int $userId): array|null
-    {
-        $cart = ConnectFactory::connectDB()->prepare("SELECT * FROM cart_items WHERE user_id = :user_id");
-        $cart->execute(['user_id' => $userId]);
-        $data = $cart->fetchAll(PDO::FETCH_ASSOC);
-
-        return self::hydrateAll($data);
-    }
 
     public static function hydrateAll(array $data): array|null
     {

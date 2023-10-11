@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use App\Model\ConnectFactory;
 use PDO;
 
 class Product
@@ -33,9 +32,41 @@ class Product
             $productsWithKeyId[$product['id']] = $product;
         }
 
-        $arrayObjects = [];
-        foreach ($productsWithKeyId as $product) {
-            $arrayObjects[] = new Product(
+        return Product::hydrateAll($productsWithKeyId);
+    }
+
+    public static function getById(int $id): array|null
+    {
+        $stmt = ConnectFactory::connectDB()->query(
+            "SELECT * FROM products WHERE id in ($id)");
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return Product::hydrateAll($products);
+    }
+
+
+    public static function getProductsByUserId(int $userId): array|null
+    {
+        $stmt = ConnectFactory::connectDB()->query(
+            "SELECT products.*
+                    FROM products 
+                    INNER JOIN cart_items on cart_items.product_id = products.id
+                    WHERE cart_items.user_id = $userId");
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return Product::hydrateAll($products);
+    }
+
+    public static function hydrateAll(array $products): array|null
+    {
+
+        if (empty($products)) {
+            return null;
+        }
+
+        $object = [];
+        foreach($products as $product) {
+            $object[$product['id']] = new Product(
                 $product['id'],
                 $product['product_name'],
                 $product['price'],
@@ -44,52 +75,8 @@ class Product
             );
         }
 
-
-        if (empty($arrayObjects)) {
-            return null;
-        }
-
-        return $arrayObjects;
-    }
-
-    public static function getById($id): Product|null
-    {
-        $stmt = ConnectFactory::connectDB()->query(
-            "SELECT * FROM products WHERE id in ($id)");
-        $product = $stmt->fetch();
-
-        if (empty($product)) {
-            return null;
-        }
-
-        $object = new Product(
-            $product['id'],
-            $product['product_name'],
-            $product['price'],
-            $product['description'],
-            $product['image url']
-        );
-
         return $object;
     }
-
-    public static function getProductIds(array $productIds): array|null
-    {
-        $productIds = implode(', ', $productIds);
-
-        $stmt = ConnectFactory::connectDB()->query(
-            "SELECT * FROM products WHERE id in ($productIds)");
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $productsWithKeyId = [];
-        foreach($products as $product) {
-            $productsWithKeyId[$product['id']] = $product;
-        }
-
-        return $productsWithKeyId;
-    }
-
-
 
 
 

@@ -4,32 +4,33 @@
 </head>
 
 <body>
-
+<?php foreach ($product as $elem): ?>
     <div class="container ">
         <div class="card asics">
-            <p class="price"><?php echo $product->getPrice() . 'Rub'?></p>
+            <p class="price"><?php echo $elem->getPrice() . 'Rub'?></p>
 
             <i class="info fas fa-info-circle"></i>
 
             <div class="imgBx">
-                <img src="<?php echo $product->getImageUrl(); ?>">
+                <img src="<?php echo $elem->getImageUrl(); ?>">
             </div>
             <div class="contentBx  ">
-                <h2><?php echo $product->getProductName() ?></h2>
+                <h2><?php echo $elem->getProductName() ?></h2>
 
                 <div class="size">
-                    <h3><?php echo $product->getDescription() ?></h3>
+                    <h3><?php echo $elem->getDescription() ?></h3>
                 </div>
 
                 <form action="/add-to-cart" method="POST">
                     <button > Add to Cart</button >
-                    <input type="hidden" name="product_id" value="<?php echo $product->getId(); ?>">
+                    <input type="hidden" name="product_id" value="<?php echo $elem->getId(); ?>">
 
                 </form>
 
             </div>
         </div>
     </div>
+<?php endforeach; ?>
 <div class="buttons">
     <a href="main" style="color:blue" class="register-link">Go to Main</a>
 </div>

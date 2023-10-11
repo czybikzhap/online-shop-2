@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Product;
-use App\Model\User;
+
 use App\Service\AuthenticateService;
 
 class MainController

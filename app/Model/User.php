@@ -2,8 +2,6 @@
 
 namespace App\Model;
 
-use App\Model\ConnectFactory;
-use App\Model\CartItem;
 use PDO;
 
 class User
@@ -58,7 +56,11 @@ class User
         $user->execute(['id' => $userId]);
         $data = $user->fetch(PDO::FETCH_ASSOC);
 
-        $obj = new User($data['name'], $data['email'], $data['password']);
+        $name     = $data['name'];
+        $email    = $data['email'];
+        $password = $data['password'];
+
+        $obj = new self($name, $email, $password);
         $obj->setId($data['id']);
 
         return $obj;
@@ -67,20 +69,16 @@ class User
 
     public function getTotalCost(): int
     {
-        $cartItems = CartItem::getProductsInCart($this->getId());
+        $cartItems = $this->cartItems();
 
-        $productIds = [];
-        foreach ( $cartItems as $productInCart) {
-            $productIds[] = $productInCart->getProductId();
-        }
-        $productsWithKeyId = Product::getProductIds($productIds);
+        $productsWithKeyId = Product::getProductsByUserId($this->id);
 
         $totalCost = 0;
         foreach ($cartItems as $elem) {
             $productId = $elem->getProductId();
             $product   = $productsWithKeyId[$productId];
 
-            $price  = $product['price'];
+            $price  = $product->getPrice();
             $amount = $elem->getAmount();
 
             $totalCost = $totalCost + $price * $amount;
@@ -93,16 +91,6 @@ class User
     public function cartItems(): array|null
     {
         return CartItem::getAllByUserId($this->id);
-    }
-
-    public function productsInCart(): array
-    {
-        $productIds = [];
-
-        foreach ($this->cartItems() as $productInCart) {
-            $productIds[] = $productInCart->getProductId();
-        }
-        return Product::getProductIds($productIds);
     }
 
     /**

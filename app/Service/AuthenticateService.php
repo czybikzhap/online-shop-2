@@ -44,12 +44,17 @@ class AuthenticateService
         return null;
     }
 
+
     public function logout(): void
     {
         session_start();
         session_destroy();
 
         unset($this->user);
+
+        if (isset($_COOKIE)) {
+            unset($_COOKIE);
+        }
     }
 
     public function getId(): int

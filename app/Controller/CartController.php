@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\CartItem;
+use App\Model\Product;
 use App\Service\AuthenticateService;
 
 class CartController
@@ -23,6 +24,7 @@ class CartController
         }
 
         $cartItems = $user->cartItems();
+        $userId = $user->getId();
 
         if (empty($cartItems)) {
             return [
@@ -32,7 +34,7 @@ class CartController
                 ]
             ];
         } else {
-            $productsInCart = $user->productsInCart();
+            $productsInCart = Product::getProductsByUserId($userId);
             $totalCost = $user->getTotalCost();
 
             return [
