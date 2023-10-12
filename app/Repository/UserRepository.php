@@ -1,40 +1,28 @@
 <?php
 
-namespace App\Model;
+use App\Model\CartItem;
+use App\Model\ConnectFactory;
+use App\Model\Product;
+use App\Model\User;
 
-use PDO;
-
-class User
+class UserRepository
 {
-    private int $id;
-    private string $name;
-    private string $email;
-    private string $hash;
-
-
-    public function __construct(string $name, string $email, string $hash)
-    {
-        $this->name  = $name;
-        $this->email = $email;
-        $this->hash  = $hash;
-    }
-
-    public function createUser() //: array|false
+    public function createUser(): array|false
     {
         $stmt = ConnectFactory::connectDB()->prepare("INSERT INTO users (name, email, password) 
             VALUES (:name, :email, :password)");
         $stmt->execute(['name' => $this->name, 'email' => $this->email, 'password' => $this->hash]);
 
-//        return $stmt->fetch();
+        return $stmt->fetch();
     }
 
-    public static function getByEmail(string $email): self|null
+    public static function getByEmail(string $email): User|null
     {
         $stmt = ConnectFactory::connectDB()->prepare("SELECT * FROM users WHERE email = :email ");
         $stmt->execute(['email' => $email]);
         $data = $stmt->fetch();
 
-        return User::hydrateAll($data);
+        return UserRepository::hydrateAll($data);
 
     }
 
@@ -53,7 +41,7 @@ class User
             return null;
         }
 
-        $user = new self($data['name'], $data['email'], $data['password']);
+        $user = new User($data['name'], $data['email'], $data['password']);
         $user->setId($data['id']);
 
         return $user;
@@ -84,45 +72,5 @@ class User
     {
         return CartItem::getAllByUserId($this->id);
     }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHash(): string
-    {
-        return $this->hash;
-    }
-
 
 }

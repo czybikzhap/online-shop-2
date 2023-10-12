@@ -33,7 +33,7 @@ class UserController
                 $user = new User($name, $email, $hash);
                 $user->createUser();
 
-                $_SESSION['id'] = $this->authenticateService->getId();
+//                $_SESSION['id'] = $this->authenticateService->getId();
 
 
                 header('Location:./main');

@@ -20,6 +20,7 @@ class AuthenticateService
         }
 
         $this->user = User::getById($_SESSION['id']);
+        $this->user->setId($_SESSION['id']);
 
         return $this->user;
     }
