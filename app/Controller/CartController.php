@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
-use App\Model\CartItem;
-use App\Model\Product;
+use App\Entity\CartItem;
+use app\Entity\Product;
+use App\Repository\CartItemRepository;
+use App\Repository\ProductRepository;
 use App\Service\AuthenticateService;
 
 class CartController
@@ -34,7 +36,7 @@ class CartController
                 ]
             ];
         } else {
-            $productsInCart = Product::getProductsByUserId($userId);
+            $productsInCart = ProductRepository::getProductsByUserId($userId);
             $totalCost = $user->getTotalCost();
 
             return [
@@ -65,7 +67,7 @@ class CartController
                 $userId = $_SESSION['id'];
                 $productId = $_POST['product_id'];
 
-                CartItem::addProduct($userId, $productId);
+                CartItemRepository::addProduct($userId, $productId);
 
                 header('Location: /main');
 
@@ -100,7 +102,7 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            CartItem::deleteByUserId ($_SESSION['id']);
+            CartItemRepository::deleteByUserId ($_SESSION['id']);
         }
         header('Location: /main');
     }
@@ -114,7 +116,7 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            CartItem::deleteProduct($_SESSION['id'], $_POST['product_id']);
+            CartItemRepository::deleteProduct($_SESSION['id'], $_POST['product_id']);
 
             header('Location: /cart');
 

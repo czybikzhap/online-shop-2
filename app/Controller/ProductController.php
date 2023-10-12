@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Model\Product;
+use app\Entity\Product;
+use App\Repository\ProductRepository;
 use App\Service\AuthenticateService;
 
 class ProductController
@@ -30,7 +31,7 @@ class ProductController
 
             $id = $_POST['product_id'];
 
-            $product = Product::getById($id);
+            $product = ProductRepository::getById($id);
         }
 
         return [

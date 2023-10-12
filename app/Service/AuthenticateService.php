@@ -2,7 +2,8 @@
 
 namespace App\Service;
 
-use App\Model\User;
+use App\Entity\User;
+use App\Repository\UserRepository;
 
 class AuthenticateService
 {
@@ -19,7 +20,7 @@ class AuthenticateService
             return null;
         }
 
-        $this->user = User::getById($_SESSION['id']);
+        $this->user = UserRepository::getById($_SESSION['id']);
         $this->user->setId($_SESSION['id']);
 
         return $this->user;
@@ -27,7 +28,7 @@ class AuthenticateService
 
     public function authenticate(string $email, string $pwd): User|null
     {
-        $user = User::getByEmail($email);
+        $user = UserRepository::getByEmail($email);
 
         if ($user === null) {
             return null;

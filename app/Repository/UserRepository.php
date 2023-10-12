@@ -1,19 +1,18 @@
 <?php
 
-use App\Model\CartItem;
-use App\Model\ConnectFactory;
-use App\Model\Product;
-use App\Model\User;
+namespace App\Repository;
+
+use App\Entity\User;
+
+use PDO;
 
 class UserRepository
 {
-    public function createUser(): array|false
+    public function createUser($name, $email, $hash): void
     {
         $stmt = ConnectFactory::connectDB()->prepare("INSERT INTO users (name, email, password) 
             VALUES (:name, :email, :password)");
-        $stmt->execute(['name' => $this->name, 'email' => $this->email, 'password' => $this->hash]);
-
-        return $stmt->fetch();
+        $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hash]);
     }
 
     public static function getByEmail(string $email): User|null
@@ -32,7 +31,7 @@ class UserRepository
         $user->execute(['id' => $userId]);
         $data = $user->fetch(PDO::FETCH_ASSOC);
 
-        return User::hydrateAll($data);
+        return UserRepository::hydrateAll($data);
     }
 
     private static function hydrateAll($data): User|null
@@ -47,30 +46,7 @@ class UserRepository
         return $user;
     }
 
-    public function getTotalCost(): int
-    {
-        $cartItems = $this->cartItems();
 
-        $productsWithKeyId = Product::getProductsByUserId($this->id);
 
-        $totalCost = 0;
-        foreach ($cartItems as $elem) {
-            $productId = $elem->getProductId();
-            $product   = $productsWithKeyId[$productId];
-
-            $price  = $product->getPrice();
-            $amount = $elem->getAmount();
-
-            $totalCost = $totalCost + $price * $amount;
-
-        }
-        return $totalCost;
-
-    }
-
-    public function cartItems(): array|null
-    {
-        return CartItem::getAllByUserId($this->id);
-    }
 
 }

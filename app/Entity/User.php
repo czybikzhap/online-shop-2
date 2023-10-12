@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Entity;
+
+use App\Repository\CartItemRepository;
+use App\Repository\ProductRepository;
+
 class User
 {
     private int $id;
@@ -13,6 +18,34 @@ class User
         $this->name  = $name;
         $this->email = $email;
         $this->hash  = $hash;
+    }
+
+
+
+    public function getTotalCost(): int
+    {
+        $cartItems = $this->cartItems();
+
+        $productsWithKeyId = ProductRepository::getProductsByUserId($this->id);
+
+        $totalCost = 0;
+        foreach ($cartItems as $elem) {
+            $productId = $elem->getProductId();
+            $product   = $productsWithKeyId[$productId];
+
+            $price  = $product->getPrice();
+            $amount = $elem->getAmount();
+
+            $totalCost = $totalCost + $price * $amount;
+
+        }
+        return $totalCost;
+
+    }
+
+    public function cartItems(): array|null
+    {
+        return CartItemRepository::getAllByUserId($this->id);
     }
 
     /**

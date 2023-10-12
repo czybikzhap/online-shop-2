@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Model\Product;
-
+use app\Entity\Product;
+use App\Repository\ProductRepository;
 use App\Service\AuthenticateService;
 
 class MainController
@@ -24,7 +24,7 @@ class MainController
 
         print_r($user->getId());
 
-        $products = Product::getAll();
+        $products = ProductRepository::getAll();
 
         return [
             'view' => 'main',
