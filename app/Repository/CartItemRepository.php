@@ -8,7 +8,7 @@ use PDO;
 
 class CartItemRepository
 {
-    public static function addProduct(int $userId, int $productId): void
+    public function addProduct(int $userId, int $productId): void
     {
         $stmt = ConnectFactory::connectDB()->prepare("
                 INSERT INTO cart_items (user_id, product_id, amount) 
@@ -19,7 +19,7 @@ class CartItemRepository
         $stmt->execute(['user_id' => $userId, 'product_id' => $productId]);
     }
 
-    public static function getAllByUserId(int $userId): array|null
+    public function getAllByUserId(int $userId): array|null
     {
         $stmt = ConnectFactory::connectDB()->prepare("SELECT * FROM cart_items 
          WHERE user_id = :user_id");
@@ -47,7 +47,7 @@ class CartItemRepository
 
 
 
-    public static function deleteByUserId (int $userId): void
+    public function deleteByUserId (int $userId): void
     {
         $stmt = ConnectFactory::connectDB()->prepare('
             DELETE FROM cart_items 
@@ -56,7 +56,7 @@ class CartItemRepository
         $stmt->execute(['user_id' => $userId]);
     }
 
-    public static function deleteProduct($userId, $productId): void
+    public function deleteProduct($userId, $productId): void
     {
         $stmt = ConnectFactory::connectDB()->prepare('
             DELETE FROM cart_items

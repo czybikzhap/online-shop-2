@@ -15,26 +15,26 @@ class UserRepository
         $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hash]);
     }
 
-    public static function getByEmail(string $email): User|null
+    public function getByEmail(string $email): User|null
     {
         $stmt = ConnectFactory::connectDB()->prepare("SELECT * FROM users WHERE email = :email ");
         $stmt->execute(['email' => $email]);
-        $data = $stmt->fetch();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return UserRepository::hydrateAll($data);
+        return UserRepository::hydrate($data);
 
     }
 
-    public static function getById(int $userId): User|null
+    public function getById(int $userId): User|null
     {
         $user = ConnectFactory::connectDB()->prepare("SELECT * FROM users WHERE id = :id");
         $user->execute(['id' => $userId]);
         $data = $user->fetch(PDO::FETCH_ASSOC);
 
-        return UserRepository::hydrateAll($data);
+        return UserRepository::hydrate($data);
     }
 
-    private static function hydrateAll($data): User|null
+    private static function hydrate($data): User|null
     {
         if(empty($data)) {
             return null;

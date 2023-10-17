@@ -20,13 +20,12 @@ class User
         $this->hash  = $hash;
     }
 
-
-
     public function getTotalCost(): int
     {
         $cartItems = $this->cartItems();
 
-        $productsWithKeyId = ProductRepository::getProductsByUserId($this->id);
+        $productsWithKeyId = new ProductRepository();
+        $productsWithKeyId = $productsWithKeyId->getProductsByUserId($this->id);
 
         $totalCost = 0;
         foreach ($cartItems as $elem) {
@@ -45,7 +44,9 @@ class User
 
     public function cartItems(): array|null
     {
-        return CartItemRepository::getAllByUserId($this->id);
+        $cartItems = new CartItemRepository;
+        $cartItems = $cartItems->getAllByUserId($this->id);
+        return $cartItems;
     }
 
     /**

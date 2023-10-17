@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AuthenticateService;
 
@@ -31,11 +30,14 @@ class UserController
 
                 $hash = password_hash($pwd, PASSWORD_DEFAULT);
 
-                $user = new UserRepository();
-                $user->createUser($name, $email, $hash);
+                $createUser = new UserRepository();
+                $createUser->createUser($name, $email, $hash);
 
+                $user = $this->authenticateService->authenticate($email, $pwd);
 
-                header('Location:./main');
+                if ($user !== null) {
+                    header('Location:./main');
+                }
             }
         }
         return [
@@ -75,7 +77,8 @@ class UserController
                 $errors['email'] = "некорректный email";
             }
 
-            $dbinfo = UserRepository::getByEmail($email);
+            $dbinfo = new UserRepository;
+            $dbinfo =$dbinfo->getByEmail($email);
 
             if (!empty($dbinfo)) {
                 $errors['email'] = 'пользователь с таким адресом электронной почты уже зарегистрирован';
@@ -161,9 +164,11 @@ class UserController
             header('Location:./login');
         }
 
-        $userId = $this->authenticateService->getId();
+        $userId = $user->getId();
 
-        $user = UserRepository::getById($userId);
+        $user = new UserRepository;
+        $user = $user->getById($userId);
+
 
         return [
             'view' => 'profile',

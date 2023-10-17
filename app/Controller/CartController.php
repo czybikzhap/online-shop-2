@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\CartItem;
-use app\Entity\Product;
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
 use App\Service\AuthenticateService;
@@ -36,7 +34,8 @@ class CartController
                 ]
             ];
         } else {
-            $productsInCart = ProductRepository::getProductsByUserId($userId);
+            $productsInCart = new ProductRepository;
+            $productsInCart = $productsInCart->getProductsByUserId($userId);
             $totalCost = $user->getTotalCost();
 
             return [
@@ -64,10 +63,12 @@ class CartController
 
             if (empty($errors)) {
 
-                $userId = $_SESSION['id'];
+                $userId = $user->getId();
                 $productId = $_POST['product_id'];
 
-                CartItemRepository::addProduct($userId, $productId);
+                $addProduct = new CartItemRepository;
+                $addProduct->addProduct($userId, $productId);
+
 
                 header('Location: /main');
 
@@ -102,7 +103,8 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            CartItemRepository::deleteByUserId ($_SESSION['id']);
+            $deleteCart = new CartItemRepository();
+            $deleteCart->deleteByUserId ($user->getId());
         }
         header('Location: /main');
     }
@@ -116,7 +118,8 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            CartItemRepository::deleteProduct($_SESSION['id'], $_POST['product_id']);
+            $deleteProduct = new CartItemRepository();
+            $deleteProduct->deleteProduct($user->getId(), $_POST['product_id']);
 
             header('Location: /cart');
 

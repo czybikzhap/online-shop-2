@@ -8,7 +8,7 @@ use PDO;
 
 class ProductRepository
 {
-    public static function getAll(): array|null
+    public function getAll(): array|null
     {
 
         $stmt = ConnectFactory::connectDB()->query("SELECT * FROM products");
@@ -22,7 +22,7 @@ class ProductRepository
         return ProductRepository::hydrateAll($productsWithKeyId);
     }
 
-    public static function getById(int $id): array|null
+    public function getById(int $id): array|null
     {
         $stmt = ConnectFactory::connectDB()->query(
             "SELECT * FROM products WHERE id in ($id)");
@@ -32,7 +32,7 @@ class ProductRepository
     }
 
 
-    public static function getProductsByUserId(int $userId): array|null
+    public function getProductsByUserId(int $userId): array|null
     {
         $stmt = ConnectFactory::connectDB()->query(
             "SELECT products.*

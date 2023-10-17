@@ -20,27 +20,28 @@ class AuthenticateService
             return null;
         }
 
-        $this->user = UserRepository::getById($_SESSION['id']);
-        $this->user->setId($_SESSION['id']);
+        $user = new UserRepository;
+        $user = $user->getById($_SESSION['id']);
 
-        return $this->user;
+        return $this->user = $user;
     }
 
     public function authenticate(string $email, string $pwd): User|null
     {
-        $user = UserRepository::getByEmail($email);
+        $userRepository = new UserRepository;
+        $user = $userRepository->getByEmail($email);
 
         if ($user === null) {
             return null;
         }
 
-        if (password_verify($pwd, $user->getHash())) {
+        $hash = password_hash($pwd, PASSWORD_DEFAULT);
+
+        if (password_verify($pwd, $hash)) {
             session_start();
             $_SESSION['id'] = $user->getId();
 
-            $this->user =$user;
-
-            return $this->user;
+            return $this->user = $user;
         }
 
         return null;
@@ -59,10 +60,8 @@ class AuthenticateService
         }
     }
 
-    public function getId(): int
-    {
-        return $this->user->getId();
-    }
+
+
 
 
 
