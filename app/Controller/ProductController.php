@@ -12,7 +12,7 @@ class ProductController
 
     public function __construct()
     {
-        $this->authenticateService = new AuthenticateService();
+        $this->authenticateService = AuthenticateService();
     }
     public function product(): array
     {

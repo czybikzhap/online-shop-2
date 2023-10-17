@@ -4,15 +4,16 @@ namespace App\Controller;
 
 use App\Repository\ProductRepository;
 use App\Service\AuthenticateService;
+use App\Service\AuthenticationCookieService;
 
 class MainController
 {
 
-    private AuthenticateService $authenticateService;
+    private AuthenticationCookieService $authenticateService;
 
     public function __construct()
     {
-        $this->authenticateService = new AuthenticateService();
+        $this->authenticateService = new AuthenticationCookieService();
     }
     public function main(): array
     {

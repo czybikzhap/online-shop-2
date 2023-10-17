@@ -8,11 +8,11 @@ use App\Service\AuthenticateService;
 
 class CartController
 {
-    private AuthenticateService $authenticateService;
+    private AuthenticationService $authenticateService;
 
     public function __construct()
     {
-        $this->authenticateService = new AuthenticateService();
+        $this->authenticateService = AuthenticationService();
     }
 
 

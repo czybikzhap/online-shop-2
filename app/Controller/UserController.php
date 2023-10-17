@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Repository\UserRepository;
 use App\Service\AuthenticateService;
+use App\Service\AuthenticationCookieService;
+
 
 class UserController
 {
@@ -11,7 +13,7 @@ class UserController
 
     public function __construct()
     {
-        $this->authenticateService = new AuthenticateService();
+        $this->authenticateService = new AuthenticateService;
     }
 
     public function signup(): array
