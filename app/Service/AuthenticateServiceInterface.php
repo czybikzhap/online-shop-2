@@ -3,7 +3,7 @@
 namespace App\Service;
 
 
-interface AuthenticateService
+interface AuthenticateServiceInterface
 {
     public function getUser();
     public function authenticate(string $email, string $pwd);

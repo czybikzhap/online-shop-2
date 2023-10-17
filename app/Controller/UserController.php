@@ -32,8 +32,8 @@ class UserController
 
                 $hash = password_hash($pwd, PASSWORD_DEFAULT);
 
-                $createUser = new UserRepository();
-                $createUser->createUser($name, $email, $hash);
+                $userRepository = new UserRepository();
+                $userRepository->createUser($name, $email, $hash);
 
                 $user = $this->authenticateService->authenticate($email, $pwd);
 

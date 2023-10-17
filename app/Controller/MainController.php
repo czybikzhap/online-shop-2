@@ -24,8 +24,8 @@ class MainController
 
         print_r($user->getId());
 
-        $products = new ProductRepository;
-        $products = $products->getAll();
+        $productsRepository = new ProductRepository;
+        $products = $productsRepository->getAll();
 
         return [
             'view' => 'main',

@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Repository\UserRepository;
 
-class AuthenticationSessionService implements AuthenticateService
+class AuthenticationSessionService implements AuthenticateServiceInterface
 {
     protected User $user;
 

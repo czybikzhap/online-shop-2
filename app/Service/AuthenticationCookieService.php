@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Repository\UserRepository;
 
-class AuthenticationCookieService implements AuthenticateService
+class AuthenticationCookieService implements AuthenticateServiceInterface
 {
     protected User $user;
 
@@ -15,13 +15,13 @@ class AuthenticationCookieService implements AuthenticateService
             return $this->user;
         }
 
-        if (!isset($_COOKIE['id'])) {
+        if (!isset($_COOKIE['user_id'])) {
             return null;
         }
 
-        $user = new UserRepository;
-        $user = $user->getById($_COOKIE['id']);
-        setcookie('user', $user->getEmail(), time() + 3600);
+        $userRepository = new UserRepository;
+        $user = $userRepository->getById($_COOKIE['user_id']);
+
 
         return $this->user = $user;
     }
@@ -37,8 +37,7 @@ class AuthenticationCookieService implements AuthenticateService
 
         if (password_verify($pwd, $user->getHash())) {
 
-            $_COOKIE['id'] = $user->getId();
-            setcookie('user', $user->getEmail(), time() + 3600);
+            setcookie('user', $user->getId(), time() + 3600);
 
             return $this->user = $user;
         }
