@@ -21,8 +21,9 @@ class CartItemRepository
 
     public function getAllByUserId(int $userId): array|null
     {
-        $stmt = ConnectFactory::connectDB()->prepare("SELECT * FROM cart_items 
-         WHERE user_id = :user_id");
+        $stmt = ConnectFactory::connectDB()->prepare("
+            SELECT * FROM cart_items 
+            WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -35,6 +36,7 @@ class CartItemRepository
         if (empty($data)) {
             return null;
         }
+
         $cartItems = [];
         foreach ($data as $cartItemArr) {
             $cartItems[] = new CartItem($cartItemArr['user_id'],

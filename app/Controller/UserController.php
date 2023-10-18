@@ -3,17 +3,16 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
-use App\Service\AuthenticateService;
-use App\Service\AuthenticationCookieService;
+use App\Service\AuthenticateServiceInterface;
 
 
 class UserController
 {
-    private AuthenticateService $authenticateService;
+    private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct()
+    public function __construct(AuthenticateServiceInterface $authenticateService)
     {
-        $this->authenticateService = new AuthenticateService;
+        $this->authenticateService = $authenticateService;
     }
 
     public function signup(): array
@@ -168,8 +167,8 @@ class UserController
 
         $userId = $user->getId();
 
-        $user = new UserRepository;
-        $user = $user->getById($userId);
+        $userRepository = new UserRepository;
+        $user = $userRepository->getById($userId);
 
 
         return [

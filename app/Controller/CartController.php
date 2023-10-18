@@ -4,15 +4,16 @@ namespace App\Controller;
 
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
-use App\Service\AuthenticateService;
+use App\Service\AuthenticateServiceInterface;
+use App\Service\AuthenticationSessionService;
 
 class CartController
 {
-    private AuthenticationService $authenticateService;
+    private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct()
+    public function __construct(AuthenticateServiceInterface $authenticateService)
     {
-        $this->authenticateService = AuthenticationService();
+        $this->authenticateService = $authenticateService;
     }
 
 
@@ -34,8 +35,8 @@ class CartController
                 ]
             ];
         } else {
-            $productsInCart = new ProductRepository;
-            $productsInCart = $productsInCart->getProductsByUserId($userId);
+            $productsInCartRepository = new ProductRepository;
+            $productsInCart = $productsInCartRepository->getProductsByUserId($userId);
             $totalCost = $user->getTotalCost();
 
             return [
@@ -66,8 +67,8 @@ class CartController
                 $userId = $user->getId();
                 $productId = $_POST['product_id'];
 
-                $addProduct = new CartItemRepository;
-                $addProduct->addProduct($userId, $productId);
+                $addProductRepository = new CartItemRepository;
+                $addProductRepository->addProduct($userId, $productId);
 
 
                 header('Location: /main');
@@ -103,8 +104,8 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            $deleteCart = new CartItemRepository();
-            $deleteCart->deleteByUserId ($user->getId());
+            $deleteCartRepository = new CartItemRepository();
+            $deleteCartRepository->deleteByUserId ($user->getId());
         }
         header('Location: /main');
     }
@@ -118,8 +119,8 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            $deleteProduct = new CartItemRepository();
-            $deleteProduct->deleteProduct($user->getId(), $_POST['product_id']);
+            $deleteProductRepository = new CartItemRepository();
+            $deleteProductRepository->deleteProduct($user->getId(), $_POST['product_id']);
 
             header('Location: /cart');
 

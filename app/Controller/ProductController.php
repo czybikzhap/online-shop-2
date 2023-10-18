@@ -3,17 +3,18 @@
 namespace App\Controller;
 
 use App\Repository\ProductRepository;
-use App\Service\AuthenticateService;
+use App\Service\AuthenticateServiceInterface;
 
 class ProductController
 {
 
-    private AuthenticateService $authenticateService;
+    private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct()
+    public function __construct(AuthenticateServiceInterface $authenticateService)
     {
-        $this->authenticateService = AuthenticateService();
+        $this->authenticateService = $authenticateService;
     }
+
     public function product(): array
     {
         $user = $this->authenticateService->getUser();
@@ -30,8 +31,8 @@ class ProductController
 
             $id = $_POST['product_id'];
 
-            $product = new ProductRepository;
-            $product = $product->getById($id);
+            $productRepository = new ProductRepository;
+            $product = $productRepository->getById($id);
         }
 
         return [

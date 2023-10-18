@@ -3,18 +3,18 @@
 namespace App\Controller;
 
 use App\Repository\ProductRepository;
-use App\Service\AuthenticateService;
-use App\Service\AuthenticationCookieService;
+use App\Service\AuthenticateServiceInterface;
 
 class MainController
 {
 
-    private AuthenticationCookieService $authenticateService;
+    private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct()
+    public function __construct(AuthenticateServiceInterface $authenticateService)
     {
-        $this->authenticateService = new AuthenticationCookieService();
+        $this->authenticateService = $authenticateService;
     }
+
     public function main(): array
     {
         $user = $this->authenticateService->getUser();
