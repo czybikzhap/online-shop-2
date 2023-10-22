@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
+use PDO;
 
 class User
 {
@@ -11,19 +12,23 @@ class User
     private string $name;
     private string $email;
     private string $hash;
+    private PDO $pdo;
 
     public function __construct(string $name, string $email, string $hash)
     {
         $this->name  = $name;
         $this->email = $email;
         $this->hash  = $hash;
+        $this->pdo = new PDO('pgsql:host=db; dbname=dbname',
+            'dbuser', 'dbpwd');
     }
+
 
     public function getTotalCost(): int
     {
         $cartItems = $this->cartItems();
 
-        $productsWithKeyId = new ProductRepository();
+        $productsWithKeyId = new ProductRepository($this->pdo);
         $productsWithKeyId = $productsWithKeyId->getProductsByUserId($this->id);
 
         $totalCost = 0;
@@ -43,7 +48,7 @@ class User
 
     public function cartItems(): array|null
     {
-        $cartItems = new CartItemRepository();
+        $cartItems = new CartItemRepository($this->pdo);
         $cartItems = $cartItems->getAllByUserId($this->id);
 
         return $cartItems;

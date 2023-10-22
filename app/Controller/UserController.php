@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\CartItemRepository;
-use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Service\AuthenticateServiceInterface;
 

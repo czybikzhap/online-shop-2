@@ -10,9 +10,14 @@ class Container
         $this->services = $services;
     }
 
+
     public function get(string $className): object
     {
-        if(!isset($this->services[$className])) {
+        if ($className === App\Repository\ConnectFactory::connectDB()) {
+            return new $className;
+        }
+
+        if (!isset($this->services[$className])) {
             return new $className;
         }
 
