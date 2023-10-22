@@ -5,15 +5,21 @@ namespace App\Controller;
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
 use App\Service\AuthenticateServiceInterface;
-use App\Service\AuthenticationSessionService;
 
 class CartController
 {
     private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct(AuthenticateServiceInterface $authenticateService)
+    private ProductRepository $productRepository;
+    private CartItemRepository $cartItemRepository;
+
+    public function __construct(AuthenticateServiceInterface $authenticateService,
+                                ProductRepository $productRepository,
+                                CartItemRepository $cartItemRepository)
     {
         $this->authenticateService = $authenticateService;
+        $this->productRepository = $productRepository;
+        $this->cartItemRepository = $cartItemRepository;
     }
 
 
@@ -35,8 +41,7 @@ class CartController
                 ]
             ];
         } else {
-            $productsInCartRepository = new ProductRepository;
-            $productsInCart = $productsInCartRepository->getProductsByUserId($userId);
+            $productsInCart = $this->productRepository->getProductsByUserId($userId);
             $totalCost = $user->getTotalCost();
 
             return [
@@ -67,8 +72,7 @@ class CartController
                 $userId = $user->getId();
                 $productId = $_POST['product_id'];
 
-                $addProductRepository = new CartItemRepository;
-                $addProductRepository->addProduct($userId, $productId);
+                $this->cartItemRepository->addProduct($userId, $productId);
 
 
                 header('Location: /main');
@@ -104,8 +108,7 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            $deleteCartRepository = new CartItemRepository();
-            $deleteCartRepository->deleteByUserId ($user->getId());
+            $this->cartItemRepository->deleteByUserId ($user->getId());
         }
         header('Location: /main');
     }
@@ -119,8 +122,7 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            $deleteProductRepository = new CartItemRepository();
-            $deleteProductRepository->deleteProduct($user->getId(), $_POST['product_id']);
+            $this->cartItemRepository->deleteProduct($user->getId(), $_POST['product_id']);
 
             header('Location: /cart');
 

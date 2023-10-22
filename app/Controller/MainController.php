@@ -10,9 +10,13 @@ class MainController
 
     private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct(AuthenticateServiceInterface $authenticateService)
+    private ProductRepository $productRepository;
+
+    public function __construct(AuthenticateServiceInterface $authenticateService,
+                                ProductRepository $productRepository)
     {
         $this->authenticateService = $authenticateService;
+        $this->productRepository = $productRepository;
     }
 
     public function main(): array
@@ -24,8 +28,7 @@ class MainController
 
         print_r($user->getId());
 
-        $productsRepository = new ProductRepository;
-        $products = $productsRepository->getAll();
+        $products = $this->productRepository->getAll();
 
         return [
             'view' => 'main',

@@ -19,17 +19,16 @@ spl_autoload_register(function ($class) {
 
 $routes = require_once '../config/routes.php';
 
-$controllers = require_once '../config/controllers.php';
+$services = require_once '../config/services.php';
+
+$container = require_once '../Container.php';
+
+$container = new Container($services);
 
 if (isset($routes[$uri])) {
     list($class, $method) = $routes[$uri];
 
-    if(isset($controllers[$class])) {
-        $callback = $controllers[$class];
-        $obj = $callback();
-    } else {
-        $obj = new $class();
-    }
+    $obj = $container->get($class);
 
     $result = $obj->$method();
 

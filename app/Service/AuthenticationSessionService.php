@@ -9,6 +9,13 @@ class AuthenticationSessionService implements AuthenticateServiceInterface
 {
     protected User $user;
 
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function getUser(): User|null
     {
         if (isset($this->user)) {
@@ -20,16 +27,14 @@ class AuthenticationSessionService implements AuthenticateServiceInterface
             return null;
         }
 
-        $user = new UserRepository;
-        $user = $user->getById($_SESSION['id']);
+        $user = $this->userRepository->getById($_SESSION['id']);
 
         return $this->user = $user;
     }
 
     public function authenticate(string $email, string $pwd): User|null
     {
-        $userRepository = new UserRepository;
-        $user = $userRepository->getByEmail($email);
+        $user = $this->userRepository->getByEmail($email);
 
         if ($user === null) {
             return null;

@@ -8,10 +8,17 @@ use PDO;
 
 class ProductRepository
 {
+    private PDO $pdo;
+
+    public function __construct(PDO $pdo)
+    {
+        $this->pdo = $pdo;
+    }
+
     public function getAll(): array|null
     {
 
-        $stmt = ConnectFactory::connectDB()->query("SELECT * FROM products");
+        $stmt = $this->pdo->query("SELECT * FROM products");
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $productsWithKeyId = [];
@@ -24,7 +31,7 @@ class ProductRepository
 
     public function getById(int $id): array|null
     {
-        $stmt = ConnectFactory::connectDB()->query(
+        $stmt = $this->pdo->query(
             "SELECT * FROM products WHERE id in ($id)");
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -34,7 +41,7 @@ class ProductRepository
 
     public function getProductsByUserId(int $userId): array|null
     {
-        $stmt = ConnectFactory::connectDB()->query(
+        $stmt = $this->pdo->query(
             "SELECT products.*
                     FROM products 
                     INNER JOIN cart_items on cart_items.product_id = products.id

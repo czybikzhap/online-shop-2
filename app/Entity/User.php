@@ -12,7 +12,6 @@ class User
     private string $email;
     private string $hash;
 
-
     public function __construct(string $name, string $email, string $hash)
     {
         $this->name  = $name;
@@ -44,8 +43,9 @@ class User
 
     public function cartItems(): array|null
     {
-        $cartItems = new CartItemRepository;
+        $cartItems = new CartItemRepository();
         $cartItems = $cartItems->getAllByUserId($this->id);
+
         return $cartItems;
     }
 

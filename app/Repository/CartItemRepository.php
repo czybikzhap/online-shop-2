@@ -8,9 +8,16 @@ use PDO;
 
 class CartItemRepository
 {
+    private PDO $pdo;
+
+    public function __construct(PDO $pdo)
+    {
+        $this->pdo = $pdo;
+    }
+
     public function addProduct(int $userId, int $productId): void
     {
-        $stmt = ConnectFactory::connectDB()->prepare("
+        $stmt = $this->pdo->prepare("
                 INSERT INTO cart_items (user_id, product_id, amount) 
                 VALUES (:user_id, :product_id, 1)
                 ON CONFLICT (user_id, product_id)   
@@ -21,7 +28,7 @@ class CartItemRepository
 
     public function getAllByUserId(int $userId): array|null
     {
-        $stmt = ConnectFactory::connectDB()->prepare("
+        $stmt = $this->pdo->prepare("
             SELECT * FROM cart_items 
             WHERE user_id = :user_id");
         $stmt->execute(['user_id' => $userId]);
@@ -51,7 +58,7 @@ class CartItemRepository
 
     public function deleteByUserId (int $userId): void
     {
-        $stmt = ConnectFactory::connectDB()->prepare('
+        $stmt = $this->pdo->prepare('
             DELETE FROM cart_items 
             WHERE user_id = :user_id'
         );
@@ -60,7 +67,7 @@ class CartItemRepository
 
     public function deleteProduct($userId, $productId): void
     {
-        $stmt = ConnectFactory::connectDB()->prepare('
+        $stmt = $this->pdo->prepare('
             DELETE FROM cart_items
             WHERE user_id = :user_id 
             AND product_id = :product_id'

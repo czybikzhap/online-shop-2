@@ -10,9 +10,13 @@ class ProductController
 
     private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct(AuthenticateServiceInterface $authenticateService)
+    private ProductRepository $productRepository;
+
+    public function __construct(AuthenticateServiceInterface $authenticateService,
+                                ProductRepository $productRepository)
     {
         $this->authenticateService = $authenticateService;
+        $this->productRepository = $productRepository;
     }
 
     public function product(): array
@@ -31,8 +35,7 @@ class ProductController
 
             $id = $_POST['product_id'];
 
-            $productRepository = new ProductRepository;
-            $product = $productRepository->getById($id);
+            $product = $this->productRepository->getById($id);
         }
 
         return [

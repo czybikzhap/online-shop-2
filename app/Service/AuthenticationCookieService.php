@@ -9,6 +9,13 @@ class AuthenticationCookieService implements AuthenticateServiceInterface
 {
     protected User $user;
 
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function getUser(): User|null
     {
         if (isset($this->user)) {
@@ -19,8 +26,7 @@ class AuthenticationCookieService implements AuthenticateServiceInterface
             return null;
         }
 
-        $userRepository = new UserRepository;
-        $user = $userRepository->getById($_COOKIE['user_id']);
+        $user = $this->userRepository->getById($_COOKIE['user_id']);
 
 
         return $this->user = $user;
@@ -28,8 +34,7 @@ class AuthenticationCookieService implements AuthenticateServiceInterface
 
     public function authenticate(string $email, string $pwd): User|null
     {
-        $userRepository = new UserRepository;
-        $user = $userRepository->getByEmail($email);
+        $user = $this->userRepository->getByEmail($email);
 
         if ($user === null) {
             return null;

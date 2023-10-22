@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\CartItemRepository;
+use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Service\AuthenticateServiceInterface;
 
@@ -10,9 +12,14 @@ class UserController
 {
     private AuthenticateServiceInterface $authenticateService;
 
-    public function __construct(AuthenticateServiceInterface $authenticateService)
+    private UserRepository $userRepository;
+
+
+    public function __construct(AuthenticateServiceInterface $authenticateService,
+                                UserRepository $userRepository)
     {
         $this->authenticateService = $authenticateService;
+        $this->userRepository = $userRepository;
     }
 
     public function signup(): array
@@ -31,8 +38,7 @@ class UserController
 
                 $hash = password_hash($pwd, PASSWORD_DEFAULT);
 
-                $userRepository = new UserRepository();
-                $userRepository->createUser($name, $email, $hash);
+                $this->userRepository->createUser($name, $email, $hash);
 
                 $user = $this->authenticateService->authenticate($email, $pwd);
 
@@ -78,8 +84,7 @@ class UserController
                 $errors['email'] = "некорректный email";
             }
 
-            $dbinfo = new UserRepository;
-            $dbinfo =$dbinfo->getByEmail($email);
+            $dbinfo = $this->userRepository->getByEmail($email);
 
             if (!empty($dbinfo)) {
                 $errors['email'] = 'пользователь с таким адресом электронной почты уже зарегистрирован';
@@ -167,8 +172,7 @@ class UserController
 
         $userId = $user->getId();
 
-        $userRepository = new UserRepository;
-        $user = $userRepository->getById($userId);
+        $user = $this->userRepository->getById($userId);
 
 
         return [
@@ -183,6 +187,7 @@ class UserController
     {
         $this->authenticateService->logout();
     }
+
 
 
 }
