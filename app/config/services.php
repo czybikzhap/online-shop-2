@@ -1,5 +1,6 @@
 <?php
 
+use App\Container;
 use App\Controller\CartController;
 use App\Controller\MainController;
 use App\Controller\ProductController;
@@ -12,52 +13,52 @@ use App\Service\AuthenticateServiceInterface;
 
 
 return  [
-    UserController::class => function (Container $container): UserController {
-        $obj = $container->get(AuthenticateServiceInterface::class);
-        $userRepository = $container->get(UserRepository::class);
+    UserController::class => function (): UserController {
+        Container::get(AuthenticateServiceInterface::class);
+        Container::get(UserRepository::class);
 
-        return new UserController($obj, $userRepository);
+        return new UserController();
     },
 
-    MainController::class => function (Container $container): MainController {
-        $obj = $container->get(AuthenticateServiceInterface::class);
-        $productRepository = $container->get(ProductRepository::class);
+    MainController::class => function (): MainController {
+        Container::get(AuthenticateServiceInterface::class);
+        Container::get(ProductRepository::class);
 
-    return new MainController($obj, $productRepository);
+    return new MainController();
     },
 
-    CartController::class => function (Container $container): CartController {
-        $obj = $container->get(AuthenticateServiceInterface::class);
-        $productRepository = $container->get(ProductRepository::class);
-        $cartItemRepository = $container->get(CartItemRepository::class);
+    CartController::class => function (): CartController {
+        Container::get(AuthenticateServiceInterface::class);
+        Container::get(ProductRepository::class);
+        Container::get(CartItemRepository::class);
 
-        return new CartController($obj, $productRepository, $cartItemRepository);
+        return new CartController();
     },
 
-    ProductController::class => function (Container $container): ProductController {
-        $obj = $container->get(AuthenticateServiceInterface::class);
-        $productRepository = $container->get(ProductRepository::class);
+    ProductController::class => function (): ProductController {
+        Container::get(AuthenticateServiceInterface::class);
+        Container::get(ProductRepository::class);
 
-        return new ProductController($obj, $productRepository);
+        return new ProductController();
     },
 
-    UserRepository::class => function (Container $container): UserRepository {
-        $pdo = $container->get(PDO::class);
+    UserRepository::class => function (): UserRepository {
+        $pdo = Container::get(PDO::class);
         return new UserRepository($pdo);
     },
 
-    ProductRepository::class => function (Container $container): ProductRepository {
-        $pdo = $container->get(PDO::class);
+    ProductRepository::class => function (): ProductRepository {
+        $pdo = Container::get(PDO::class);
         return new ProductRepository($pdo);
     },
 
-    CartItemRepository::class => function (Container $container): CartItemRepository {
-        $pdo = $container->get(PDO::class);
+    CartItemRepository::class => function (): CartItemRepository {
+        $pdo = Container::get(PDO::class);
         return new CartItemRepository($pdo);
     },
 
-    AuthenticateServiceInterface::class => function (Container $container): AuthenticateServiceInterface {
-        $userRepository = $container->get(UserRepository::class);
+    AuthenticateServiceInterface::class => function (): AuthenticateServiceInterface {
+        $userRepository = Container::get(UserRepository::class);
         return new AuthenticationSessionService($userRepository);
     },
 

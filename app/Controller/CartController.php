@@ -2,30 +2,19 @@
 
 namespace App\Controller;
 
+use App\Container;
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
 use App\Service\AuthenticateServiceInterface;
 
 class CartController
 {
-    private AuthenticateServiceInterface $authenticateService;
-
-    private ProductRepository $productRepository;
-    private CartItemRepository $cartItemRepository;
-
-    public function __construct(AuthenticateServiceInterface $authenticateService,
-                                ProductRepository $productRepository,
-                                CartItemRepository $cartItemRepository)
-    {
-        $this->authenticateService = $authenticateService;
-        $this->productRepository = $productRepository;
-        $this->cartItemRepository = $cartItemRepository;
-    }
-
 
     public function cart(): array
     {
-        $user = $this->authenticateService->getUser();
+        $userAuthenticate = Container::get(AuthenticateServiceInterface::class);
+        $user = $userAuthenticate->getUser();
+
         if ($user === null) {
             header("Location: /login");
         }
@@ -41,7 +30,9 @@ class CartController
                 ]
             ];
         } else {
-            $productsInCart = $this->productRepository->getProductsByUserId($userId);
+            $productRepository = Container::get(ProductRepository::class);
+            $productsInCart = $productRepository->getProductsByUserId($userId);
+
             $totalCost = $user->getTotalCost();
 
             return [
@@ -58,7 +49,10 @@ class CartController
 
     public function addProduct(): void
     {
-        $user = $this->authenticateService->getUser();
+
+        $userAuthenticate = Container::get(AuthenticateServiceInterface::class);
+        $user = $userAuthenticate->getUser();
+
         if ($user === null) {
             header("Location: /login");
         }
@@ -72,7 +66,8 @@ class CartController
                 $userId = $user->getId();
                 $productId = $_POST['product_id'];
 
-                $this->cartItemRepository->addProduct($userId, $productId);
+                $cartItemRepository = Container::get(CartItemRepository::class);
+                $cartItemRepository->addProduct($userId, $productId);
 
 
                 header('Location: /main');
@@ -101,28 +96,34 @@ class CartController
 
     public function delete(): void
     {
-        $user = $this->authenticateService->getUser();
+        $userAuthenticate = Container::get(AuthenticateServiceInterface::class);
+        $user = $userAuthenticate->getUser();
+
         if ($user === null) {
             header("Location: /login");
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            $this->cartItemRepository->deleteByUserId ($user->getId());
+            $cartItemRepository = Container::get(CartItemRepository::class);
+            $cartItemRepository->deleteByUserId ($user->getId());
         }
         header('Location: /main');
     }
 
     public function deleteProduct(): void
     {
-        $user = $this->authenticateService->getUser();
+        $userAuthenticate = Container::get(AuthenticateServiceInterface::class);
+        $user = $userAuthenticate->getUser();
+
         if ($user === null) {
             header("Location: /login");
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-            $this->cartItemRepository->deleteProduct($user->getId(), $_POST['product_id']);
+            $cartItemRepository = Container::get(CartItemRepository::class);
+            $cartItemRepository->deleteProduct($user->getId(), $_POST['product_id']);
 
             header('Location: /cart');
 

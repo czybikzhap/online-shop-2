@@ -2,26 +2,19 @@
 
 namespace App\Controller;
 
+use App\Container;
 use App\Repository\ProductRepository;
 use App\Service\AuthenticateServiceInterface;
 
 class ProductController
 {
 
-    private AuthenticateServiceInterface $authenticateService;
-
-    private ProductRepository $productRepository;
-
-    public function __construct(AuthenticateServiceInterface $authenticateService,
-                                ProductRepository $productRepository)
-    {
-        $this->authenticateService = $authenticateService;
-        $this->productRepository = $productRepository;
-    }
-
     public function product(): array
     {
-        $user = $this->authenticateService->getUser();
+
+        $userAuthenticate = Container::get(AuthenticateServiceInterface::class);
+        $user = $userAuthenticate->getUser();
+
         if ($user === null) {
             header("Location: /login");
         }
@@ -35,7 +28,9 @@ class ProductController
 
             $id = $_POST['product_id'];
 
-            $product = $this->productRepository->getById($id);
+            $productRepository = Container::get(ProductRepository::class);
+            $product = $productRepository->getById($id);
+
         }
 
         return [

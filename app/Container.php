@@ -1,29 +1,35 @@
 <?php
 
+namespace App;
 
 class Container
 {
-    private array $services;
+    private static array $createServices;
 
-    public function __construct(array $services)
+    private static array $dependencies = [];
+
+    public static function init(array $services): array
     {
-        $this->services = $services;
+        return self::$dependencies = $services;
     }
 
-
-    public function get(string $className): object
+    public static function get(string $className): object
     {
-        if ($className === App\Repository\ConnectFactory::connectDB()) {
+        if (isset(self::$createServices[$className])) {
+            return self::$createServices[$className];
+        }
+
+        if (!isset(self::$dependencies[$className])) {
             return new $className;
         }
 
-        if (!isset($this->services[$className])) {
-            return new $className;
-        }
+        $callback = self::$dependencies[$className];
 
-        $callback = $this->services[$className];
+        $obj = $callback();
 
-        return $callback($this);
+        self::$createServices[$className] = $obj;
+
+        return $obj;
     }
 
 }

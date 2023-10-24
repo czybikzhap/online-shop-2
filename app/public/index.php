@@ -1,5 +1,6 @@
 <?php
 
+use App\Container;
 
 $uri = $_SERVER['REQUEST_URI'];
 
@@ -21,16 +22,15 @@ $routes = require_once '../config/routes.php';
 
 $services = require_once '../config/services.php';
 
-$container = require_once '../Container.php';
-
-$container = new Container($services);
+Container::init($services);
 
 if (isset($routes[$uri])) {
     list($class, $method) = $routes[$uri];
 
-    $obj = $container->get($class);
+    $obj = Container::get($class);
 
     $result = $obj->$method();
+
 
     if (!empty($result)) {
         $viewName = $result['view'];

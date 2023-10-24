@@ -2,33 +2,27 @@
 
 namespace App\Controller;
 
+use App\Container;
 use App\Repository\ProductRepository;
 use App\Service\AuthenticateServiceInterface;
+
 
 class MainController
 {
 
-    private AuthenticateServiceInterface $authenticateService;
-
-    private ProductRepository $productRepository;
-
-    public function __construct(AuthenticateServiceInterface $authenticateService,
-                                ProductRepository $productRepository)
-    {
-        $this->authenticateService = $authenticateService;
-        $this->productRepository = $productRepository;
-    }
-
     public function main(): array
     {
-        $user = $this->authenticateService->getUser();
+        $userAuthenticate = Container::get(AuthenticateServiceInterface::class);
+        $user = $userAuthenticate->getUser();
+
         if ($user === null) {
             header("Location: /login");
         }
 
         print_r($user->getId());
 
-        $products = $this->productRepository->getAll();
+        $productRepository = Container::get(ProductRepository::class);
+        $products = $productRepository->getAll();
 
         return [
             'view' => 'main',

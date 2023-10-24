@@ -2,23 +2,13 @@
 
 namespace App\Controller;
 
+use App\Container;
 use App\Repository\UserRepository;
 use App\Service\AuthenticateServiceInterface;
 
 
 class UserController
 {
-    private AuthenticateServiceInterface $authenticateService;
-
-    private UserRepository $userRepository;
-
-
-    public function __construct(AuthenticateServiceInterface $authenticateService,
-                                UserRepository $userRepository)
-    {
-        $this->authenticateService = $authenticateService;
-        $this->userRepository = $userRepository;
-    }
 
     public function signup(): array
     {
@@ -36,9 +26,12 @@ class UserController
 
                 $hash = password_hash($pwd, PASSWORD_DEFAULT);
 
-                $this->userRepository->createUser($name, $email, $hash);
+                $userRepository = Container::get(UserRepository::class);
+                $user = $userRepository->createUser($name, $email, $hash);
 
-                $user = $this->authenticateService->authenticate($email, $pwd);
+
+                $userAuthenticate = Container::get(AuthenticateServiceInterface::class);
+                $user = $userAuthenticate->authenticate($email, $pwd);
 
                 if ($user !== null) {
                     header('Location:./main');
@@ -82,7 +75,8 @@ class UserController
                 $errors['email'] = "некорректный email";
             }
 
-            $dbinfo = $this->userRepository->getByEmail($email);
+            $userRepository = Container::get(UserRepository::class);
+            $dbinfo = $userRepository->getByEmail($email);
 
             if (!empty($dbinfo)) {
                 $errors['email'] = 'пользователь с таким адресом электронной почты уже зарегистрирован';
@@ -118,7 +112,8 @@ class UserController
                 $email = $_POST['email'];
                 $pwd = $_POST['password'];
 
-                $user = $this->authenticateService->authenticate($email, $pwd);
+                $userRepository = Container::get(AuthenticateServiceInterface::class);
+                $user = $userRepository->authenticate($email, $pwd);
 
                 if ($user !== null) {
                     header('Location:./main');
@@ -162,7 +157,8 @@ class UserController
 
     public function profile(): array
     {
-        $user = $this->authenticateService->getUser();
+        $userRepository = Container::get(AuthenticateServiceInterface::class);
+        $user = $userRepository->getUser();
 
         if ($user === null) {
             header('Location:./login');
@@ -170,7 +166,8 @@ class UserController
 
         $userId = $user->getId();
 
-        $user = $this->userRepository->getById($userId);
+        $userRepository = Container::get(UserRepository::class);
+        $user = $userRepository->getById($userId);
 
 
         return [
@@ -183,7 +180,8 @@ class UserController
 
     public function logout(): void
     {
-        $this->authenticateService->logout();
+        $userRepository = Container::get(AuthenticateServiceInterface::class);
+        $userRepository->logout();
     }
 
 
